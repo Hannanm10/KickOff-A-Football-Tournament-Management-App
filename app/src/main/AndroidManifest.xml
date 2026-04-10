@@ -12,7 +12,28 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.KickOff">
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.SignupActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.AddMatchActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.MatchListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.AddTeamActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.TeamListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.TournamentDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.AddTournamentActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,6 +41,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activities.TournamentListActivity"
+            android:exported="false"></activity>
     </application>
 
 </manifest>
