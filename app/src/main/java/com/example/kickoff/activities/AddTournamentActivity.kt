@@ -1,21 +1,40 @@
 package com.example.kickoff.activities
 
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.example.kickoff.R
+import com.example.kickoff.models.Tournament
+import com.example.kickoff.utils.SessionManager
+import com.example.kickoff.utils.TournamentStorage
 
 class AddTournamentActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_add_tournament)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+
+        val etName = findViewById<EditText>(R.id.etTournamentName)
+        val btnSave = findViewById<Button>(R.id.btnSaveTournament)
+
+        val currentUser = SessionManager.getUser(this) ?: ""
+
+        btnSave.setOnClickListener {
+
+            val name = etName.text.toString()
+
+            if (name.isEmpty()) {
+                Toast.makeText(this, "Enter tournament name", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val tournament = Tournament(name, currentUser)
+
+            TournamentStorage.addTournament(this, tournament)
+
+            Toast.makeText(this, "Tournament Created", Toast.LENGTH_SHORT).show()
+
+            finish()
         }
     }
 }

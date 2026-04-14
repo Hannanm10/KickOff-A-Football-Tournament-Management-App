@@ -1,12 +1,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:gravity="center"
     android:orientation="vertical"
     android:padding="24dp">
 
+    <ImageView
+        android:src="@mipmap/ic_launcher"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginBottom="16dp"
+        android:layout_gravity="center"
+        android:elevation="@android:dimen/app_icon_size" />
+
     <TextView
         android:text="KickOff Login"
+        android:textColor="@color/primaryMaroon"
         android:textSize="26sp"
         android:textStyle="bold"
         android:layout_marginBottom="24dp"
@@ -16,12 +26,16 @@
     <EditText
         android:id="@+id/etUsername"
         android:hint="Username"
+        android:textColorHint="@color/accentGold"
+        android:textColor="@color/accentGold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
     <EditText
         android:id="@+id/etPassword"
         android:hint="Password"
+        android:textColorHint="@color/accentGold"
+        android:textColor="@color/accentGold"
         android:inputType="textPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -30,6 +44,7 @@
     <Button
         android:id="@+id/btnLogin"
         android:text="Login"
+        android:textColor="@color/accentGold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"/>
@@ -37,6 +52,7 @@
     <Button
         android:id="@+id/btnGoSignup"
         android:text="Create New Account"
+        android:textColor="@color/accentGold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"/>
