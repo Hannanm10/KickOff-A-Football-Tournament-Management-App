@@ -1,21 +1,69 @@
 package com.example.kickoff.activities
 
+import android.content.Intent
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
+import android.view.View
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.kickoff.R
+import com.example.kickoff.adapters.TeamAdapter
+import com.example.kickoff.models.Team
+import com.example.kickoff.utils.SessionManager
+import com.example.kickoff.utils.TeamStorage
 
 class TeamListActivity : AppCompatActivity() {
+
+    private lateinit var teamList: MutableList<Team>
+    private lateinit var adapter: TeamAdapter
+
+    private lateinit var tournament: String
+    private lateinit var organizer: String
+    private var currentUser: String = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_team_list)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+
+        val recyclerView = findViewById<RecyclerView>(R.id.recyclerTeams)
+        val btnAdd = findViewById<Button>(R.id.btnAddTeam)
+
+        // Get data from intent
+        tournament = intent.getStringExtra("tournament") ?: ""
+        organizer = intent.getStringExtra("organizer") ?: ""
+        currentUser = SessionManager.getUser(this) ?: ""
+
+        // Permission check
+        val isOrganizer = currentUser == organizer
+
+        // Hide button if viewer
+        if (!isOrganizer) {
+            btnAdd.visibility = View.GONE
         }
+
+        // Load teams
+        teamList = TeamStorage.getTeams(this, tournament)
+
+        adapter = TeamAdapter(teamList)
+
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.adapter = adapter
+
+        // Add team button
+        btnAdd.setOnClickListener {
+            val intent = Intent(this, AddTeamActivity::class.java)
+            intent.putExtra("tournament", tournament)
+            startActivity(intent)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        // Refresh data
+        teamList.clear()
+        teamList.addAll(TeamStorage.getTeams(this, tournament))
+        adapter.notifyDataSetChanged()
     }
 }

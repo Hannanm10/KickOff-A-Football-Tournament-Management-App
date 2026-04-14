@@ -13,6 +13,15 @@
         android:layout_gravity=""
         android:elevation="@android:dimen/app_icon_size" />
 
+    <TextView
+        android:text="Tournaments"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:textColor="@color/primaryMaroon"
+        android:layout_marginBottom="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
     <Button
         android:id="@+id/btnAddTournament"
         android:text="Create New Tournament"

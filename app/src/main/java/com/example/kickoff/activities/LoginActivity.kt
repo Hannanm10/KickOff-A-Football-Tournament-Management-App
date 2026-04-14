@@ -14,11 +14,11 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         // Auto-login if already logged in
-//        val currentUser = SessionManager.getUser(this)
-//        if (currentUser != null) {
-//            startActivity(Intent(this, TournamentListActivity::class.java))
-//            finish()
-//        }
+        val currentUser = SessionManager.getUser(this)
+        if (currentUser != null) {
+            startActivity(Intent(this, TournamentListActivity::class.java))
+            finish()
+        }
 
         setContentView(R.layout.activity_login)
 

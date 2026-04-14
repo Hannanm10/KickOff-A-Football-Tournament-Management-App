@@ -1,4 +1,6 @@
 package com.example.kickoff.models
 
-class Team {
-}
+data class Team(
+    val name: String,
+    val tournamentName: String
+)

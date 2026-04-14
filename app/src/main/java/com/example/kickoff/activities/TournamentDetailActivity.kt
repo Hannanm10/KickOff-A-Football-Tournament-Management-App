@@ -31,12 +31,12 @@ class TournamentDetailActivity : AppCompatActivity() {
         val isOrganizer = currentUser == organizer
 
         btnTeams.setOnClickListener {
-            Toast.makeText(this,
-                if (isOrganizer) "Organizer access" else "View only access",
-                Toast.LENGTH_SHORT
-            ).show()
 
-            // Next step: open TeamListActivity
+            val intent = Intent(this, TeamListActivity::class.java)
+            intent.putExtra("tournament", name)
+            intent.putExtra("organizer", organizer)
+
+            startActivity(intent)
         }
 
         btnMatches.setOnClickListener {
