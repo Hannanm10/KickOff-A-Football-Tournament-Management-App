@@ -1,21 +1,51 @@
 package com.example.kickoff.activities
 
+import android.content.Intent
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
+import android.widget.Button
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.example.kickoff.R
+import com.example.kickoff.utils.SessionManager
 
 class TournamentDetailActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_tournament_detail)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+
+        val name = intent.getStringExtra("name") ?: ""
+        val organizer = intent.getStringExtra("organizer") ?: ""
+        val currentUser = SessionManager.getUser(this) ?: ""
+
+        val tvName = findViewById<TextView>(R.id.tvTournamentName)
+        val tvOrg = findViewById<TextView>(R.id.tvOrganizer)
+
+        val btnTeams = findViewById<Button>(R.id.btnTeams)
+        val btnMatches = findViewById<Button>(R.id.btnMatches)
+
+        tvName.text = name
+        tvOrg.text = "Organizer: $organizer"
+
+        val isOrganizer = currentUser == organizer
+
+        btnTeams.setOnClickListener {
+            Toast.makeText(this,
+                if (isOrganizer) "Organizer access" else "View only access",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            // Next step: open TeamListActivity
+        }
+
+        btnMatches.setOnClickListener {
+            Toast.makeText(this,
+                if (isOrganizer) "Organizer access" else "View only access",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            // Next step: open MatchListActivity
         }
     }
 }

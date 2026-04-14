@@ -1,11 +1,13 @@
 package com.example.kickoff.adapters
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kickoff.R
+import com.example.kickoff.activities.TournamentDetailActivity
 import com.example.kickoff.models.Tournament
 
 class TournamentAdapter(
@@ -33,7 +35,13 @@ class TournamentAdapter(
         holder.organizer.text = "Organizer: ${tournament.organizer}"
 
         holder.itemView.setOnClickListener {
-            onClick(tournament)
+            val context = holder.itemView.context
+
+            val intent = Intent(context, TournamentDetailActivity::class.java)
+            intent.putExtra("name", tournament.name)
+            intent.putExtra("organizer", tournament.organizer)
+
+            context.startActivity(intent)
         }
     }
 }
