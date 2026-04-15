@@ -40,12 +40,12 @@ class TournamentDetailActivity : AppCompatActivity() {
         }
 
         btnMatches.setOnClickListener {
-            Toast.makeText(this,
-                if (isOrganizer) "Organizer access" else "View only access",
-                Toast.LENGTH_SHORT
-            ).show()
 
-            // Next step: open MatchListActivity
+            val intent = Intent(this, MatchListActivity::class.java)
+            intent.putExtra("tournament", name)
+            intent.putExtra("organizer", organizer)
+
+            startActivity(intent)
         }
     }
 }
