@@ -48,6 +48,9 @@
         <activity
             android:name=".activities.TournamentListActivity"
             android:exported="false" />
+        <activity
+            android:name=".activities.LeaderboardActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

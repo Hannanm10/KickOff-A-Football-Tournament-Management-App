@@ -30,6 +30,7 @@ class TournamentDetailActivity : AppCompatActivity() {
 
         val btnTeams = findViewById<Button>(R.id.btnTeams)
         val btnMatches = findViewById<Button>(R.id.btnMatches)
+        val btnLeaderboard = findViewById<Button>(R.id.btnLeaderboard)
 
         tvName.text = name
         tvOrg.text = "Organizer: $organizer"
@@ -37,20 +38,22 @@ class TournamentDetailActivity : AppCompatActivity() {
         val isOrganizer = currentUser == organizer
 
         btnTeams.setOnClickListener {
-
             val intent = Intent(this, TeamListActivity::class.java)
             intent.putExtra("tournament", name)
             intent.putExtra("organizer", organizer)
-
             startActivity(intent)
         }
 
         btnMatches.setOnClickListener {
-
             val intent = Intent(this, MatchListActivity::class.java)
             intent.putExtra("tournament", name)
             intent.putExtra("organizer", organizer)
+            startActivity(intent)
+        }
 
+        btnLeaderboard.setOnClickListener {
+            val intent = Intent(this, LeaderboardActivity::class.java)
+            intent.putExtra("tournament", name)
             startActivity(intent)
         }
     }
