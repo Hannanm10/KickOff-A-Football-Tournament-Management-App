@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -12,6 +13,7 @@ import com.example.kickoff.adapters.MatchAdapter
 import com.example.kickoff.models.Match
 import com.example.kickoff.utils.MatchStorage
 import com.example.kickoff.utils.SessionManager
+import com.google.android.material.appbar.MaterialToolbar
 
 class MatchListActivity : AppCompatActivity() {
 
@@ -22,8 +24,14 @@ class MatchListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_match_list)
 
+        val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        toolbar.setNavigationOnClickListener { onBackPressed() }
+
         val recycler = findViewById<RecyclerView>(R.id.recyclerMatches)
         val btnAdd = findViewById<Button>(R.id.btnAddMatch)
+        val tvEmpty = findViewById<TextView>(R.id.tvEmpty)
 
         val tournament = intent.getStringExtra("tournament") ?: ""
         val organizer = intent.getStringExtra("organizer") ?: ""
@@ -36,6 +44,12 @@ class MatchListActivity : AppCompatActivity() {
         list = MatchStorage.getMatches(this, tournament)
 
         adapter = MatchAdapter(list)
+
+        if (list.isEmpty()) {
+            tvEmpty.visibility = View.VISIBLE
+        } else {
+            tvEmpty.visibility = View.GONE
+        }
 
         recycler.layoutManager = LinearLayoutManager(this)
         recycler.adapter = adapter

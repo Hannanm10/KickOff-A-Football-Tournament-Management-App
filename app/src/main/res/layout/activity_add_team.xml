@@ -1,26 +1,33 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:padding="24dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/primaryMaroon"
+        android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
+        app:title="Add New Team"
+        app:titleCentered="@android:bool/config_enableMaterialDesignInPackageInstaller"
+        app:titleTextColor="@color/white"/>
+
+    <LinearLayout
+        android:padding="24dp"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
     <ImageView
         android:src="@mipmap/ic_launcher"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="12dp"
         android:layout_gravity=""
         android:elevation="@android:dimen/app_icon_size" />
-
-    <TextView
-        android:text="Add New Team"
-        android:textColor="@color/primaryMaroon"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"/>
 
     <EditText
         android:id="@+id/etTeamName"
@@ -32,9 +39,12 @@
 
     <Button
         android:id="@+id/btnSaveTeam"
-        android:text="Add Team"
+        android:text="Save Team"
         android:textColor="@color/accentGold"
         android:layout_marginTop="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
 </LinearLayout>

@@ -7,12 +7,18 @@ import com.example.kickoff.R
 import com.example.kickoff.models.Team
 import com.example.kickoff.utils.SessionManager
 import com.example.kickoff.utils.TeamStorage
+import com.google.android.material.appbar.MaterialToolbar
 
 class AddTeamActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_team)
+
+        val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        toolbar.setNavigationOnClickListener { onBackPressed() }
 
         val etName = findViewById<EditText>(R.id.etTeamName)
         val btnSave = findViewById<Button>(R.id.btnSaveTeam)

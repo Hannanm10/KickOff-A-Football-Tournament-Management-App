@@ -4,8 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    card_view:cardCornerRadius="12dp"
-    card_view:cardElevation="8dp">
+    card_view:cardCornerRadius="16dp"
+    card_view:cardElevation="6dp"
+    android:padding="20dp">
 
     <LinearLayout
     android:padding="16dp"

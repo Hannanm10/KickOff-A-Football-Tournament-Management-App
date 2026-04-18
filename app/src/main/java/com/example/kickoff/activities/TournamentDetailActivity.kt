@@ -8,12 +8,18 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.kickoff.R
 import com.example.kickoff.utils.SessionManager
+import com.google.android.material.appbar.MaterialToolbar
 
 class TournamentDetailActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tournament_detail)
+
+        val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        toolbar.setNavigationOnClickListener { onBackPressed() }
 
         val name = intent.getStringExtra("name") ?: ""
         val organizer = intent.getStringExtra("organizer") ?: ""

@@ -7,12 +7,18 @@ import com.example.kickoff.R
 import com.example.kickoff.models.Match
 import com.example.kickoff.utils.MatchStorage
 import com.example.kickoff.utils.TeamStorage
+import com.google.android.material.appbar.MaterialToolbar
 
 class AddMatchActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_match)
+
+        val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        toolbar.setNavigationOnClickListener { onBackPressed() }
 
         val tournament = intent.getStringExtra("tournament") ?: ""
 

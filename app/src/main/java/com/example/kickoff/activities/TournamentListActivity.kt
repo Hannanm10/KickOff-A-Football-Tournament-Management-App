@@ -2,7 +2,9 @@ package com.example.kickoff.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,6 +14,7 @@ import com.example.kickoff.adapters.TournamentAdapter
 import com.example.kickoff.models.Tournament
 import com.example.kickoff.utils.SessionManager
 import com.example.kickoff.utils.TournamentStorage
+import com.google.android.material.appbar.MaterialToolbar
 
 class TournamentListActivity : AppCompatActivity() {
     private lateinit var adapter: TournamentAdapter
@@ -23,6 +26,9 @@ class TournamentListActivity : AppCompatActivity() {
 
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
         val btnAdd = findViewById<Button>(R.id.btnAddTournament)
+        val tvEmpty = findViewById<TextView>(R.id.tvEmpty)
+        val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
 
         val currentUser = SessionManager.getUser(this) ?: ""
 
@@ -30,6 +36,12 @@ class TournamentListActivity : AppCompatActivity() {
 
         adapter = TournamentAdapter(tournamentList) {
             Toast.makeText(this, it.name, Toast.LENGTH_SHORT).show()
+        }
+
+        if (tournamentList.isEmpty()) {
+            tvEmpty.visibility = View.VISIBLE
+        } else {
+            tvEmpty.visibility = View.GONE
         }
 
         recyclerView.layoutManager = LinearLayoutManager(this)

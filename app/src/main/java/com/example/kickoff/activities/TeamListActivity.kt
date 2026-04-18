@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -12,6 +13,7 @@ import com.example.kickoff.adapters.TeamAdapter
 import com.example.kickoff.models.Team
 import com.example.kickoff.utils.SessionManager
 import com.example.kickoff.utils.TeamStorage
+import com.google.android.material.appbar.MaterialToolbar
 
 class TeamListActivity : AppCompatActivity() {
 
@@ -26,8 +28,14 @@ class TeamListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_team_list)
 
+        val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        toolbar.setNavigationOnClickListener { onBackPressed() }
+
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerTeams)
         val btnAdd = findViewById<Button>(R.id.btnAddTeam)
+        val tvEmpty = findViewById<TextView>(R.id.tvEmpty)
 
         // Get data from intent
         tournament = intent.getStringExtra("tournament") ?: ""
@@ -46,6 +54,12 @@ class TeamListActivity : AppCompatActivity() {
         teamList = TeamStorage.getTeams(this, tournament)
 
         adapter = TeamAdapter(teamList)
+
+        if (teamList.isEmpty()) {
+            tvEmpty.visibility = View.VISIBLE
+        } else {
+            tvEmpty.visibility = View.GONE
+        }
 
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
