@@ -68,6 +68,67 @@ object MatchStorage {
         editor.apply()
     }
 
+    fun deleteMatch(context: Context, match: Match) {
+        val all = getAllMatches(context)
+        all.removeIf { it.teamA == match.teamA && it.teamB == match.teamB && it.tournamentName == match.tournamentName }
+        save(context, all)
+    }
+
+    fun updateMatch(context: Context, oldMatch: Match, newMatch: Match) {
+        val all = getAllMatches(context)
+        val index = all.indexOfFirst { it.teamA == oldMatch.teamA && it.teamB == oldMatch.teamB && it.tournamentName == oldMatch.tournamentName }
+        if (index != -1) {
+            all[index] = newMatch
+            save(context, all)
+        }
+    }
+
+    fun updateTeamNameInMatches(context: Context, tournamentName: String, oldName: String, newName: String) {
+        val all = getAllMatches(context)
+        var changed = false
+        all.forEachIndexed { index, match ->
+            if (match.tournamentName == tournamentName) {
+                var updatedMatch = match
+                if (match.teamA == oldName) {
+                    updatedMatch = updatedMatch.copy(teamA = newName)
+                    changed = true
+                }
+                if (match.teamB == oldName) {
+                    updatedMatch = updatedMatch.copy(teamB = newName)
+                    changed = true
+                }
+                all[index] = updatedMatch
+            }
+        }
+        if (changed) save(context, all)
+    }
+
+    fun updateTournamentNameInMatches(context: Context, oldName: String, newName: String) {
+        val all = getAllMatches(context)
+        var changed = false
+        all.forEachIndexed { index, match ->
+            if (match.tournamentName == oldName) {
+                all[index] = match.copy(tournamentName = newName)
+                changed = true
+            }
+        }
+        if (changed) save(context, all)
+    }
+
+    fun deleteMatchesByTeam(context: Context, tournamentName: String, teamName: String) {
+        val all = getAllMatches(context)
+        val initialSize = all.size
+        all.removeIf { it.tournamentName == tournamentName && (it.teamA == teamName || it.teamB == teamName) }
+        if (all.size != initialSize) save(context, all)
+    }
+
+    fun deleteMatchesByTournament(context: Context, tournamentName: String) {
+        val all = getAllMatches(context)
+        val initialSize = all.size
+        all.removeIf { it.tournamentName == tournamentName }
+        if (all.size != initialSize) save(context, all)
+    }
+
     private fun getAllMatches(context: Context): MutableList<Match> {
 
         val pref = context.getSharedPreferences(PREF, Context.MODE_PRIVATE)

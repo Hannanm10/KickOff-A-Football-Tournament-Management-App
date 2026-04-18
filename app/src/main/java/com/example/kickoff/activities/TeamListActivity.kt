@@ -53,7 +53,7 @@ class TeamListActivity : AppCompatActivity() {
         // Load teams
         teamList = TeamStorage.getTeams(this, tournament)
 
-        adapter = TeamAdapter(teamList)
+        adapter = TeamAdapter(teamList, organizer)
 
         if (teamList.isEmpty()) {
             tvEmpty.visibility = View.VISIBLE

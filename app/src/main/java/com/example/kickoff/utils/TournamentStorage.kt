@@ -56,4 +56,19 @@ object TournamentStorage {
         list.add(tournament)
         saveTournaments(context, list)
     }
+
+    fun deleteTournament(context: Context, tournament: Tournament) {
+        val all = getTournaments(context)
+        all.removeIf { it.name == tournament.name }
+        saveTournaments(context, all)
+    }
+
+    fun updateTournament(context: Context, oldName: String, newName: String) {
+        val all = getTournaments(context)
+        val tournament = all.find { it.name == oldName }
+        tournament?.let {
+            all[all.indexOf(it)] = it.copy(name = newName)
+            saveTournaments(context, all)
+        }
+    }
 }

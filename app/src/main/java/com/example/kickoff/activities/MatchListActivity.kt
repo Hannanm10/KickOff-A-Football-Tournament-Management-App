@@ -43,7 +43,7 @@ class MatchListActivity : AppCompatActivity() {
 
         list = MatchStorage.getMatches(this, tournament)
 
-        adapter = MatchAdapter(list)
+        adapter = MatchAdapter(list, organizer)
 
         if (list.isEmpty()) {
             tvEmpty.visibility = View.VISIBLE
