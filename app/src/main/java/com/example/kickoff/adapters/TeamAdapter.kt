@@ -8,6 +8,8 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kickoff.R
+import android.content.Intent
+import com.example.kickoff.activities.MatchListActivity
 import com.example.kickoff.models.Team
 import com.example.kickoff.utils.MatchStorage
 import com.example.kickoff.utils.SessionManager
@@ -33,6 +35,15 @@ class TeamAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val team = list[position]
         holder.name.text = team.name
+
+        holder.itemView.setOnClickListener {
+            val context = holder.itemView.context
+            val intent = Intent(context, MatchListActivity::class.java)
+            intent.putExtra("tournament", team.tournamentName)
+            intent.putExtra("team_filter", team.name)
+            intent.putExtra("organizer", organizer)
+            context.startActivity(intent)
+        }
 
         holder.itemView.setOnLongClickListener {
             val context = holder.itemView.context

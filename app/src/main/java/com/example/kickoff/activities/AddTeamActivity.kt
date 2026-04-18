@@ -27,10 +27,16 @@ class AddTeamActivity : AppCompatActivity() {
 
         btnSave.setOnClickListener {
 
-            val name = etName.text.toString()
+            val name = etName.text.toString().trim()
 
             if (name.isEmpty()) {
-                Toast.makeText(this, "Enter team name", Toast.LENGTH_SHORT).show()
+                etName.error = "Enter team name"
+                return@setOnClickListener
+            }
+
+            val existing = TeamStorage.getTeams(this, tournament)
+            if (existing.any { it.name.equals(name, ignoreCase = true) }) {
+                etName.error = "This team already exists in this tournament"
                 return@setOnClickListener
             }
 

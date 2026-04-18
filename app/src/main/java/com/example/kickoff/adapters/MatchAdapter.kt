@@ -22,6 +22,7 @@ class MatchAdapter(
         val teams = view.findViewById<TextView>(R.id.tvTeams)
         val score = view.findViewById<TextView>(R.id.tvScore)
         val winner = view.findViewById<TextView>(R.id.tvWinner)
+        val date = view.findViewById<TextView>(R.id.tvDate)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -46,6 +47,7 @@ class MatchAdapter(
         }
 
         holder.winner.text = "Winner: $result"
+        holder.date.text = "Date: ${match.date.ifEmpty { "N/A" }}"
 
         holder.itemView.setOnLongClickListener {
             val context = holder.itemView.context

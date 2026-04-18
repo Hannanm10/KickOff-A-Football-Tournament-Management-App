@@ -28,7 +28,8 @@ object MatchStorage {
                     obj.getString("teamB"),
                     obj.getInt("scoreA"),
                     obj.getInt("scoreB"),
-                    obj.getString("tournamentName")
+                    obj.getString("tournamentName"),
+                    obj.optString("date", "")
                 )
 
                 if (match.tournamentName == tournament) {
@@ -61,6 +62,7 @@ object MatchStorage {
             obj.put("scoreA", it.scoreA)
             obj.put("scoreB", it.scoreB)
             obj.put("tournamentName", it.tournamentName)
+            obj.put("date", it.date)
             arr.put(obj)
         }
 
@@ -148,7 +150,8 @@ object MatchStorage {
                         obj.getString("teamB"),
                         obj.getInt("scoreA"),
                         obj.getInt("scoreB"),
-                        obj.getString("tournamentName")
+                        obj.getString("tournamentName"),
+                        obj.optString("date", "")
                     )
                 )
             }

@@ -34,6 +34,7 @@ class MatchListActivity : AppCompatActivity() {
         val tvEmpty = findViewById<TextView>(R.id.tvEmpty)
 
         val tournament = intent.getStringExtra("tournament") ?: ""
+        val teamFilter = intent.getStringExtra("team_filter")
         val organizer = intent.getStringExtra("organizer") ?: ""
         val currentUser = SessionManager.getUser(this) ?: ""
 
@@ -42,6 +43,12 @@ class MatchListActivity : AppCompatActivity() {
         if (!isOrganizer) btnAdd.visibility = View.GONE
 
         list = MatchStorage.getMatches(this, tournament)
+        
+        if (teamFilter != null) {
+            toolbar.title = "Matches: $teamFilter"
+            list.retainAll { it.teamA == teamFilter || it.teamB == teamFilter }
+            btnAdd.visibility = View.GONE // Hide add button in filtered view
+        }
 
         adapter = MatchAdapter(list, organizer)
 

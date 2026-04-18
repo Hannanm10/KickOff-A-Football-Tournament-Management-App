@@ -8,7 +8,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.kickoff.R
 import com.example.kickoff.models.LeaderboardEntry
 
-class LeaderboardAdapter(private val list: List<LeaderboardEntry>) :
+class LeaderboardAdapter(
+    private val list: List<LeaderboardEntry>,
+    private val onItemClick: (String) -> Unit
+) :
     RecyclerView.Adapter<LeaderboardAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -44,5 +47,7 @@ class LeaderboardAdapter(private val list: List<LeaderboardEntry>) :
         holder.tvGA.text = entry.goalsAgainst.toString()
         holder.tvGD.text = entry.goalDifference.toString()
         holder.tvPoints.text = entry.points.toString()
+
+        holder.itemView.setOnClickListener { onItemClick(entry.teamName) }
     }
 }

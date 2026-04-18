@@ -5,5 +5,6 @@ data class Match(
     val teamB: String,
     var scoreA: Int,
     var scoreB: Int,
-    val tournamentName: String
+    val tournamentName: String,
+    val date: String = ""
 )

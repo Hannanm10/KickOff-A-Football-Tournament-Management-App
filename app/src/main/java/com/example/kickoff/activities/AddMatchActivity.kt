@@ -1,5 +1,6 @@
 package com.example.kickoff.activities
 
+import android.app.DatePickerDialog
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -8,6 +9,7 @@ import com.example.kickoff.models.Match
 import com.example.kickoff.utils.MatchStorage
 import com.example.kickoff.utils.TeamStorage
 import com.google.android.material.appbar.MaterialToolbar
+import java.util.*
 
 class AddMatchActivity : AppCompatActivity() {
 
@@ -27,49 +29,94 @@ class AddMatchActivity : AppCompatActivity() {
 
         val scoreA = findViewById<EditText>(R.id.etScoreA)
         val scoreB = findViewById<EditText>(R.id.etScoreB)
+        val etMatchDate = findViewById<EditText>(R.id.etMatchDate)
         val btnSave = findViewById<Button>(R.id.btnSaveMatch)
 
-        // Load teams
-        val teams = TeamStorage.getTeams(this, tournament).map { it.name }
+        etMatchDate.setOnClickListener {
+            val calendar = Calendar.getInstance()
+            val year = calendar.get(Calendar.YEAR)
+            val month = calendar.get(Calendar.MONTH)
+            val day = calendar.get(Calendar.DAY_OF_MONTH)
 
-        if (teams.size < 2) {
-            Toast.makeText(this, "Add at least 2 teams first", Toast.LENGTH_LONG).show()
+            val dpd = DatePickerDialog(this, { _, selectedYear, selectedMonth, selectedDay ->
+                val dateStr = "$selectedYear-${selectedMonth + 1}-$selectedDay"
+                etMatchDate.setText(dateStr)
+            }, year, month, day)
+            dpd.show()
+        }
+
+        // Load teams
+        val teamList = TeamStorage.getTeams(this, tournament)
+        val teamNames = teamList.map { it.name }
+
+        if (teamNames.size < 2) {
+            Toast.makeText(this, "Add at least 2 teams to the tournament first", Toast.LENGTH_LONG).show()
             finish()
+            return
         }
 
         val adapter = ArrayAdapter(
             this,
-            android.R.layout.simple_spinner_dropdown_item,
-            teams
-        )
+            android.R.layout.simple_spinner_item,
+            teamNames
+        ).apply {
+            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        }
 
         spTeamA.adapter = adapter
         spTeamB.adapter = adapter
 
         btnSave.setOnClickListener {
+            val teamA = spTeamA.selectedItem?.toString() ?: ""
+            val teamB = spTeamB.selectedItem?.toString() ?: ""
 
-            val teamA = spTeamA.selectedItem.toString()
-            val teamB = spTeamB.selectedItem.toString()
-
-            // Prevent same team match
             if (teamA == teamB) {
-                Toast.makeText(this, "Select different teams", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "A team cannot play against itself", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            if (scoreA.text.isNullOrBlank() || scoreB.text.isNullOrBlank()
-                || scoreA.text.toString().toInt() < 0 || scoreB.text.toString().toInt() < 0) {
-                Toast.makeText(this, "Enter valid scores", Toast.LENGTH_SHORT).show()
+            val sA = scoreA.text.toString()
+            val sB = scoreB.text.toString()
+
+            if (sA.isBlank()) {
+                scoreA.error = "Enter score"
+                return@setOnClickListener
+            }
+            if (sB.isBlank()) {
+                scoreB.error = "Enter score"
                 return@setOnClickListener
             }
 
+            val valA = sA.toIntOrNull()
+            val valB = sB.toIntOrNull()
+
+            if (valA == null || valA < 0) {
+                scoreA.error = "Invalid score"
+                return@setOnClickListener
+            }
+            if (valB == null || valB < 0) {
+                scoreB.error = "Invalid score"
+                return@setOnClickListener
+            }
+
+            // Check if match already exists (optional business rule)
+            val existingMatches = MatchStorage.getMatches(this, tournament)
+            val isDuplicate = existingMatches.any { 
+                (it.teamA == teamA && it.teamB == teamB) || (it.teamA == teamB && it.teamB == teamA) 
+            }
+            
+            if (isDuplicate) {
+                Toast.makeText(this, "This match pairing already exists", Toast.LENGTH_SHORT).show()
+                // Not blocking, just a warning or could block based on requirement
+            }
 
             val match = Match(
                 teamA,
                 teamB,
-                scoreA.text.toString().toIntOrNull() ?: 0,
-                scoreB.text.toString().toIntOrNull() ?: 0,
-                tournament
+                valA,
+                valB,
+                tournament,
+                etMatchDate.text.toString()
             )
 
             MatchStorage.addMatch(this, match)

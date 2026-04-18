@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.kickoff.R
 import com.example.kickoff.adapters.LeaderboardAdapter
 import com.example.kickoff.models.LeaderboardEntry
@@ -12,6 +13,10 @@ import com.example.kickoff.utils.TeamStorage
 import com.google.android.material.appbar.MaterialToolbar
 
 class LeaderboardActivity : AppCompatActivity() {
+
+    private lateinit var swipeRefresh: SwipeRefreshLayout
+    private lateinit var rv: RecyclerView
+    private var tournamentName: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,9 +27,21 @@ class LeaderboardActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         toolbar.setNavigationOnClickListener { onBackPressed() }
 
-        val tournamentName = intent.getStringExtra("tournament") ?: ""
+        tournamentName = intent.getStringExtra("tournament") ?: ""
         toolbar.title = "Leaderboard: $tournamentName"
 
+        rv = findViewById(R.id.rvLeaderboard)
+        rv.layoutManager = LinearLayoutManager(this)
+
+        swipeRefresh = findViewById(R.id.swipeRefresh)
+        swipeRefresh.setOnRefreshListener {
+            loadLeaderboard()
+        }
+
+        loadLeaderboard()
+    }
+
+    private fun loadLeaderboard() {
         val teams = TeamStorage.getTeams(this, tournamentName)
         val matches = MatchStorage.getMatches(this, tournamentName)
 
@@ -69,8 +86,12 @@ class LeaderboardActivity : AppCompatActivity() {
             .thenByDescending { it.goalDifference }
             .thenByDescending { it.goalsFor })
 
-        val rv = findViewById<RecyclerView>(R.id.rvLeaderboard)
-        rv.layoutManager = LinearLayoutManager(this)
-        rv.adapter = LeaderboardAdapter(leaderboard)
+        rv.adapter = LeaderboardAdapter(leaderboard) { teamName ->
+            val intent = android.content.Intent(this, MatchListActivity::class.java)
+            intent.putExtra("tournament", tournamentName)
+            intent.putExtra("team_filter", teamName)
+            startActivity(intent)
+        }
+        swipeRefresh.isRefreshing = false
     }
 }
