@@ -3,7 +3,9 @@
     <color name="primaryMaroon">#800020</color>
     <color name="darkMaroon">#5A0016</color>
     <color name="accentGold">#D4AF37</color>
-
+    <color name="lightGold">#FFF4D1</color>
+    <color name="softGrey">#F5F5F5</color>
+    <color name="darkGrey">#333333</color>
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
 </resources>
