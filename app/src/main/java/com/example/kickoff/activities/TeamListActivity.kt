@@ -14,6 +14,7 @@ import com.example.kickoff.models.Team
 import com.example.kickoff.utils.SessionManager
 import com.example.kickoff.utils.TeamStorage
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class TeamListActivity : AppCompatActivity() {
 
@@ -34,7 +35,7 @@ class TeamListActivity : AppCompatActivity() {
         toolbar.setNavigationOnClickListener { onBackPressed() }
 
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerTeams)
-        val btnAdd = findViewById<Button>(R.id.btnAddTeam)
+        val btnAdd = findViewById<FloatingActionButton>(R.id.btnAddTeam)
         val tvEmpty = findViewById<TextView>(R.id.tvEmpty)
 
         // Get data from intent

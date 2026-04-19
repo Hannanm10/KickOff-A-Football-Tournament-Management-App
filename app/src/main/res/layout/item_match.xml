@@ -1,55 +1,92 @@
-<androidx.cardview.widget.CardView
+<com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    card_view:cardCornerRadius="16dp"
-    card_view:cardElevation="6dp"
-    android:padding="20dp">
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginVertical="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="2dp"
+    app:strokeColor="@color/white"
+    app:strokeWidth="1dp">
 
-    <LinearLayout
-    android:padding="16dp"
-    android:orientation="vertical"
-        android:background="@color/accentGold"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
-        <TextView
-        android:id="@+id/tvTeams"
-        android:text="Team A vs Team B"
-        android:textColor="@color/primaryMaroon"
-        android:textStyle="bold"
-        android:textSize="25sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:background="@color/accentGold">
 
         <TextView
             android:id="@+id/tvDate"
-            android:text="Date: -"
-            android:textColor="#888888"
-            android:textSize="14sp"
-            android:layout_marginTop="4dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="108dp"
+            android:text="Date: 2023-10-25"
+            android:textColor="@color/darkGrey"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/scoreContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@id/tvDate">
+
+            <TextView
+                android:id="@+id/tvTeamA"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Team A"
+                android:textColor="@color/primaryMaroon"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvScore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:background="@drawable/bg_score_badge"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="4dp"
+                android:text="2 - 1"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvTeamB"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Team B"
+                android:textColor="@color/primaryMaroon"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
 
         <TextView
-        android:id="@+id/tvScore"
-        android:text="0 - 0"
-        android:textColor="@color/darkMaroon"
-        android:textSize="18sp"
-        android:layout_marginTop="4dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+            android:id="@+id/tvWinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Winner: Team A"
+            android:textColor="@color/primaryMaroon"
+            android:textSize="14sp"
+            android:textStyle="italic"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/scoreContainer" />
 
-        <TextView
-        android:id="@+id/tvWinner"
-        android:text="Winner: -"
-        android:textColor="#666666"
-        android:textSize="18sp"
-        android:layout_marginTop="4dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>

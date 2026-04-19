@@ -28,9 +28,9 @@ class TournamentDetailActivity : AppCompatActivity() {
         val tvName = findViewById<TextView>(R.id.tvTournamentName)
         val tvOrg = findViewById<TextView>(R.id.tvOrganizer)
 
-        val btnTeams = findViewById<Button>(R.id.btnTeams)
-        val btnMatches = findViewById<Button>(R.id.btnMatches)
-        val btnLeaderboard = findViewById<Button>(R.id.btnLeaderboard)
+        val btnTeams = findViewById<com.google.android.material.card.MaterialCardView>(R.id.btnTeamsCard)
+        val btnMatches = findViewById<com.google.android.material.card.MaterialCardView>(R.id.btnMatchesCard)
+        val btnLeaderboard = findViewById<com.google.android.material.card.MaterialCardView>(R.id.btnLeaderboardCard)
 
         tvName.text = name
         tvOrg.text = "Organizer: $organizer"

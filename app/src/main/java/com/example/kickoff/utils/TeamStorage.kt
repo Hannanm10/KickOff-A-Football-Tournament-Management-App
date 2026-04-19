@@ -59,18 +59,25 @@ object TeamStorage {
         editor.apply()
     }
 
-    fun deleteTeam(context: Context, team: Team) {
-        val all = getAllTeams(context)
-        all.removeIf { it.name == team.name && it.tournamentName == team.tournamentName }
-        saveTeams(context, all)
-    }
-
     fun updateTeam(context: Context, oldName: String, newName: String, tournamentName: String) {
         val all = getAllTeams(context)
-        val team = all.find { it.name == oldName && it.tournamentName == tournamentName }
-        team?.let {
-            all[all.indexOf(it)] = it.copy(name = newName)
+        val index = all.indexOfFirst { it.name == oldName && it.tournamentName == tournamentName }
+        if (index != -1) {
+            all[index] = all[index].copy(name = newName)
             saveTeams(context, all)
+            
+            // Cascade update to matches
+            MatchStorage.updateTeamNameInMatches(context, tournamentName, oldName, newName)
+        }
+    }
+
+    fun deleteTeam(context: Context, team: Team) {
+        val all = getAllTeams(context)
+        if (all.removeIf { it.name == team.name && it.tournamentName == team.tournamentName }) {
+            saveTeams(context, all)
+            
+            // Cascade delete to matches
+            MatchStorage.deleteMatchesByTeam(context, team.tournamentName, team.name)
         }
     }
 

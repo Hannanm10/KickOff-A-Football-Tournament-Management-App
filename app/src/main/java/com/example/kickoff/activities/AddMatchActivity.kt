@@ -9,6 +9,7 @@ import com.example.kickoff.models.Match
 import com.example.kickoff.utils.MatchStorage
 import com.example.kickoff.utils.TeamStorage
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.textfield.TextInputEditText
 import java.util.*
 
 class AddMatchActivity : AppCompatActivity() {
@@ -27,10 +28,10 @@ class AddMatchActivity : AppCompatActivity() {
         val spTeamA = findViewById<Spinner>(R.id.spTeamA)
         val spTeamB = findViewById<Spinner>(R.id.spTeamB)
 
-        val scoreA = findViewById<EditText>(R.id.etScoreA)
-        val scoreB = findViewById<EditText>(R.id.etScoreB)
-        val etMatchDate = findViewById<EditText>(R.id.etMatchDate)
-        val btnSave = findViewById<Button>(R.id.btnSaveMatch)
+        val scoreA = findViewById<TextInputEditText>(R.id.etScoreA)
+        val scoreB = findViewById<TextInputEditText>(R.id.etScoreB)
+        val etMatchDate = findViewById<TextInputEditText>(R.id.etMatchDate)
+        val btnSave = findViewById<com.google.android.material.button.MaterialButton>(R.id.btnSaveMatch)
 
         etMatchDate.setOnClickListener {
             val calendar = Calendar.getInstance()

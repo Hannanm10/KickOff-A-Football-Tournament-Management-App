@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.kickoff.R
 import com.example.kickoff.models.User
 import com.example.kickoff.utils.UserStorage
+import com.google.android.material.textfield.TextInputEditText
 
 class SignupActivity : AppCompatActivity() {
 
@@ -14,10 +15,10 @@ class SignupActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signup)
 
-        val etUsername = findViewById<EditText>(R.id.etNewUsername)
-        val etPassword = findViewById<EditText>(R.id.etNewPassword)
-        val etConfirm = findViewById<EditText>(R.id.etConfirmPassword)
-        val btnSignup = findViewById<Button>(R.id.btnSignup)
+        val etUsername = findViewById<TextInputEditText>(R.id.etNewUsername)
+        val etPassword = findViewById<TextInputEditText>(R.id.etNewPassword)
+        val etConfirm = findViewById<TextInputEditText>(R.id.etConfirmPassword)
+        val btnSignup = findViewById<com.google.android.material.button.MaterialButton>(R.id.btnSignup)
 
         btnSignup.setOnClickListener {
 

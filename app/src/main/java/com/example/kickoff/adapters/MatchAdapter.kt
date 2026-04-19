@@ -19,7 +19,8 @@ class MatchAdapter(
 ) : RecyclerView.Adapter<MatchAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val teams = view.findViewById<TextView>(R.id.tvTeams)
+        val teamA = view.findViewById<TextView>(R.id.tvTeamA)
+        val teamB = view.findViewById<TextView>(R.id.tvTeamB)
         val score = view.findViewById<TextView>(R.id.tvScore)
         val winner = view.findViewById<TextView>(R.id.tvWinner)
         val date = view.findViewById<TextView>(R.id.tvDate)
@@ -37,16 +38,17 @@ class MatchAdapter(
 
         val match = list[position]
 
-        holder.teams.text = "${match.teamA} vs ${match.teamB}"
+        holder.teamA.text = match.teamA
+        holder.teamB.text = match.teamB
         holder.score.text = "${match.scoreA} - ${match.scoreB}"
 
         val result = when {
-            match.scoreA > match.scoreB -> match.teamA
-            match.scoreB > match.scoreA -> match.teamB
-            else -> "Draw"
+            match.scoreA > match.scoreB -> "Winner: ${match.teamA}"
+            match.scoreB > match.scoreA -> "Winner: ${match.teamB}"
+            else -> "Result: Draw"
         }
 
-        holder.winner.text = "Winner: $result"
+        holder.winner.text = result
         holder.date.text = "Date: ${match.date.ifEmpty { "N/A" }}"
 
         holder.itemView.setOnLongClickListener {

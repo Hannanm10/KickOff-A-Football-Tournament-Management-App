@@ -1,98 +1,147 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:background="@color/white"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/primaryMaroon">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/primaryMaroon"
+        android:background="@color/darkMaroon"
         android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
+        app:layout_constraintTop_toTopOf="parent"
         app:title="Add New Match"
         app:titleCentered="@android:bool/config_enableMaterialDesignInPackageInstaller"
-        app:titleTextColor="@color/white"/>
+        app:titleTextColor="@color/white" />
 
-    <LinearLayout
-        android:padding="24dp"
-        android:orientation="vertical"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
 
-    <ImageView
-        android:src="@mipmap/ic_launcher"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginBottom="12dp"
-        android:layout_gravity=""
-        android:elevation="@android:dimen/app_icon_size" />
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Select Teams"
-        android:textColor="@color/accentGold"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="8dp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/accentGold"
+                android:padding="24dp">
 
-    <Spinner
-        android:id="@+id/spTeamA"
-        android:layout_marginTop="10dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/accentGold"
-        />
+                <ImageView
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="16dp"
+                    android:src="@mipmap/ic_launcher" />
 
-    <Spinner
-        android:id="@+id/spTeamB"
-        android:layout_marginTop="10dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/accentGold"
-        />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:text="Match Details"
+                    android:textColor="@color/primaryMaroon"
+                    android:layout_gravity="center"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
-    <EditText
-        android:id="@+id/etScoreA"
-        android:hint="Score A"
-        android:textColorHint="@color/accentGold"
-        android:textColor="@color/accentGold"
-        android:inputType="number"
-        android:layout_marginTop="8dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Select Home Team"
+                    android:textSize="12sp"
+                    android:textColor="@color/primaryMaroon"/>
+                <Spinner
+                    android:id="@+id/spTeamA"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginBottom="16dp" />
 
-    <EditText
-        android:id="@+id/etScoreB"
-        android:hint="Score B"
-        android:textColorHint="@color/accentGold"
-        android:textColor="@color/accentGold"
-        android:inputType="number"
-        android:layout_marginTop="8dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Select Away Team"
+                    android:textSize="12sp"
+                    android:textColor="@color/primaryMaroon"/>
+                <Spinner
+                    android:id="@+id/spTeamB"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginBottom="16dp" />
 
-    <EditText
-        android:id="@+id/etMatchDate"
-        android:hint="Match Date (YYYY-MM-DD)"
-        android:textColorHint="@color/accentGold"
-        android:textColor="@color/accentGold"
-        android:focusable="false"
-        android:clickable="true"
-        android:layout_marginTop="8dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/btnSaveMatch"
-        android:text="Save Match"
-        android:textColor="@color/accentGold"
-        android:layout_marginTop="10dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:layout_weight="1"
+                        android:hint="Score A">
 
-    </LinearLayout>
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etScoreA"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="number" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
-</LinearLayout>
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_weight="1"
+                        android:hint="Score B">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etScoreB"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="number" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:hint="Match Date"
+                    app:startIconDrawable="@android:drawable/ic_menu_today">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etMatchDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="false"
+                        android:clickable="true"
+                        android:inputType="none" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnSaveMatch"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="24dp"
+                    android:text="Save Match"
+                    android:textColor="@color/accentGold"
+                    android:textAllCaps="false"
+                    app:cornerRadius="8dp" />
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

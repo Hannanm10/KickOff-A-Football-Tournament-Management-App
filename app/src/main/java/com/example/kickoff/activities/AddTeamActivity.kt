@@ -8,6 +8,7 @@ import com.example.kickoff.models.Team
 import com.example.kickoff.utils.SessionManager
 import com.example.kickoff.utils.TeamStorage
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.textfield.TextInputEditText
 
 class AddTeamActivity : AppCompatActivity() {
 
@@ -20,8 +21,8 @@ class AddTeamActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         toolbar.setNavigationOnClickListener { onBackPressed() }
 
-        val etName = findViewById<EditText>(R.id.etTeamName)
-        val btnSave = findViewById<Button>(R.id.btnSaveTeam)
+        val etName = findViewById<TextInputEditText>(R.id.etTeamName)
+        val btnSave = findViewById<com.google.android.material.button.MaterialButton>(R.id.btnSaveTeam)
 
         val tournament = intent.getStringExtra("tournament") ?: ""
 

@@ -2,14 +2,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/primaryMaroon">
-
-    <View
-        android:id="@+id/topView"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:background="@color/primaryMaroon"
-        app:layout_constraintTop_toTopOf="parent" />
+    android:background="@color/darkMaroon">
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
@@ -41,7 +34,7 @@
                 android:layout_gravity="center"
                 android:layout_marginBottom="24dp"
                 android:text="Welcome Back!"
-                android:textColor="@color/primaryMaroon"
+                android:textColor="@color/darkMaroon"
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
@@ -86,6 +79,7 @@
                 android:layout_marginTop="24dp"
                 android:text="Login"
                 android:textColor="@color/accentGold"
+                android:backgroundTint="@color/darkMaroon"
                 android:textAllCaps="false"
                 android:textSize="16sp"
                 app:cornerRadius="8dp" />
@@ -98,7 +92,7 @@
                 android:layout_marginTop="8dp"
                 android:text="Don't have an account? Sign Up"
                 android:textAllCaps="false"
-                android:textColor="@color/primaryMaroon" />
+                android:textColor="@color/darkMaroon" />
 
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>

@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.kickoff.R
 import com.example.kickoff.utils.SessionManager
 import com.example.kickoff.utils.UserStorage
+import com.google.android.material.textfield.TextInputEditText
 
 class LoginActivity : AppCompatActivity() {
 
@@ -22,10 +23,10 @@ class LoginActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_login)
 
-        val etUsername = findViewById<EditText>(R.id.etUsername)
-        val etPassword = findViewById<EditText>(R.id.etPassword)
-        val btnLogin = findViewById<Button>(R.id.btnLogin)
-        val btnSignup = findViewById<Button>(R.id.btnGoSignup)
+        val etUsername = findViewById<TextInputEditText>(R.id.etUsername)
+        val etPassword = findViewById<TextInputEditText>(R.id.etPassword)
+        val btnLogin = findViewById<com.google.android.material.button.MaterialButton>(R.id.btnLogin)
+        val btnSignup = findViewById<com.google.android.material.button.MaterialButton>(R.id.btnGoSignup)
 
         btnLogin.setOnClickListener {
 

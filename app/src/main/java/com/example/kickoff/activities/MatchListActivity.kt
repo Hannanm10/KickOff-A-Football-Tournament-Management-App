@@ -14,6 +14,7 @@ import com.example.kickoff.models.Match
 import com.example.kickoff.utils.MatchStorage
 import com.example.kickoff.utils.SessionManager
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MatchListActivity : AppCompatActivity() {
 
@@ -30,7 +31,7 @@ class MatchListActivity : AppCompatActivity() {
         toolbar.setNavigationOnClickListener { onBackPressed() }
 
         val recycler = findViewById<RecyclerView>(R.id.recyclerMatches)
-        val btnAdd = findViewById<Button>(R.id.btnAddMatch)
+        val btnAdd = findViewById<FloatingActionButton>(R.id.btnAddMatch)
         val tvEmpty = findViewById<TextView>(R.id.tvEmpty)
 
         val tournament = intent.getStringExtra("tournament") ?: ""
@@ -72,9 +73,22 @@ class MatchListActivity : AppCompatActivity() {
         super.onResume()
 
         val tournament = intent.getStringExtra("tournament") ?: ""
+        val teamFilter = intent.getStringExtra("team_filter")
 
         list.clear()
-        list.addAll(MatchStorage.getMatches(this, tournament))
+        val allMatches = MatchStorage.getMatches(this, tournament)
+        if (teamFilter != null) {
+            allMatches.retainAll { it.teamA == teamFilter || it.teamB == teamFilter }
+        }
+        list.addAll(allMatches)
+        
+        val tvEmpty = findViewById<TextView>(R.id.tvEmpty)
+        if (list.isEmpty()) {
+            tvEmpty.visibility = View.VISIBLE
+        } else {
+            tvEmpty.visibility = View.GONE
+        }
+
         adapter.notifyDataSetChanged()
     }
 }

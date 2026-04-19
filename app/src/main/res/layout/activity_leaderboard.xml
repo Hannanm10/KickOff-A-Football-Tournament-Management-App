@@ -1,120 +1,143 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    android:orientation="vertical">
+    android:background="@color/primaryMaroon">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/primaryMaroon"
+        android:background="@color/darkMaroon"
+        android:elevation="4dp"
         android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
-        app:title="Tournament Leaderboard"
+        app:layout_constraintTop_toTopOf="parent"
+        app:title="Leaderboard"
         app:titleCentered="@android:bool/config_enableMaterialDesignInPackageInstaller"
         app:titleTextColor="@color/white" />
 
-    <!-- Header Row -->
-    <LinearLayout
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/headerCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#EEE"
-        android:orientation="horizontal"
-        android:padding="8dp"
-        android:backgroundTint="@color/accentGold"
-        android:gravity="center_vertical">
+        android:layout_margin="8dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="2dp"
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
 
-        <TextView
-            android:layout_width="25dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="#"
-            android:textSize="10sp"
-            android:textStyle="bold" />
+            android:background="@color/darkMaroon"
+            android:orientation="horizontal"
+            android:padding="10dp"
+            android:gravity="center_vertical">
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Team"
-            android:textSize="15sp"
-            android:textStyle="bold" />
+            <TextView
+                android:layout_width="25dp"
+                android:layout_height="wrap_content"
+                android:text="#"
+                android:textColor="@color/accentGold"
+                android:textSize="10sp"
+                android:textStyle="bold" />
 
-        <TextView
-            android:layout_width="20dp"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="P"
-            android:textSize="10sp"
-            android:textStyle="bold" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="TEAM"
+                android:textColor="@color/accentGold"
+                android:textSize="11sp"
+                android:textStyle="bold" />
 
-        <TextView
-            android:layout_width="20dp"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="W"
-            android:textSize="10sp"
-            android:textStyle="bold" />
+            <TextView
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="P"
+                android:textColor="@color/accentGold"
+                android:textSize="10sp"
+                android:textStyle="bold" />
 
-        <TextView
-            android:layout_width="20dp"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="D"
-            android:textSize="10sp"
-            android:textStyle="bold" />
+            <TextView
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="W"
+                android:textColor="@color/accentGold"
+                android:textSize="10sp"
+                android:textStyle="bold" />
 
-        <TextView
-            android:layout_width="20dp"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="L"
-            android:textSize="10sp"
-            android:textStyle="bold" />
+            <TextView
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="D"
+                android:textColor="@color/accentGold"
+                android:textSize="10sp"
+                android:textStyle="bold" />
 
-        <TextView
-            android:layout_width="25dp"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="GF"
-            android:textSize="10sp"
-            android:textStyle="bold" />
+            <TextView
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="L"
+                android:textColor="@color/accentGold"
+                android:textSize="10sp"
+                android:textStyle="bold" />
 
-        <TextView
-            android:layout_width="25dp"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="GA"
-            android:textSize="10sp"
-            android:textStyle="bold" />
+            <TextView
+                android:layout_width="22dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="GF"
+                android:textColor="@color/accentGold"
+                android:textSize="10sp"
+                android:textStyle="bold" />
 
-        <TextView
-            android:layout_width="25dp"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="GD"
-            android:textSize="10sp"
-            android:textStyle="bold" />
+            <TextView
+                android:layout_width="22dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="GA"
+                android:textColor="@color/accentGold"
+                android:textSize="10sp"
+                android:textStyle="bold" />
 
-        <TextView
-            android:layout_width="30dp"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Pts"
-            android:textSize="10sp"
-            android:textStyle="bold" />
-    </LinearLayout>
+            <TextView
+                android:layout_width="22dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="GD"
+                android:textColor="@color/accentGold"
+                android:textSize="10sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="28dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="PTS"
+                android:textColor="@color/accentGold"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/headerCard">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvLeaderboard"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingBottom="16dp" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

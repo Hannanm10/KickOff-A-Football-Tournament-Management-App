@@ -1,100 +1,113 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:padding="8dp"
-    android:gravity="center_vertical">
+    android:layout_marginHorizontal="8dp"
+    android:layout_marginVertical="2dp"
+    app:cardCornerRadius="4dp"
+    app:cardElevation="1dp">
 
-    <TextView
-        android:id="@+id/tvPos"
-        android:layout_width="25dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="1"
-        android:textSize="12sp"
-        android:textColor="@color/black"
-        android:textStyle="bold" />
+        android:orientation="horizontal"
+        android:background="@color/accentGold"
+        android:padding="10dp"
+        android:gravity="center_vertical">
 
-    <TextView
-        android:id="@+id/tvTeamName"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="Team Name"
-        android:textSize="12sp"
-        android:textColor="@color/primaryMaroon"
-        android:textStyle="bold" />
+        <TextView
+            android:id="@+id/tvPos"
+            android:layout_width="25dp"
+            android:layout_height="wrap_content"
+            android:text="1"
+            android:textColor="@color/darkGrey"
+            android:textSize="12sp"
+            android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/tvPlayed"
-        android:layout_width="20dp"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textSize="12sp"
-        android:textColor="@color/black"
-        android:text="P" />
+        <TextView
+            android:id="@+id/tvTeamName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Team Name"
+            android:textColor="@color/primaryMaroon"
+            android:textSize="12sp"
+            android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/tvWins"
-        android:layout_width="20dp"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textColor="@color/black"
-        android:textSize="12sp"
-        android:text="W" />
+        <TextView
+            android:id="@+id/tvPlayed"
+            android:layout_width="20dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/darkGrey"
+            android:textSize="10sp"
+            android:text="0" />
 
-    <TextView
-        android:id="@+id/tvDraws"
-        android:layout_width="20dp"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textSize="12sp"
-        android:textColor="@color/black"
-        android:text="D" />
+        <TextView
+            android:id="@+id/tvWins"
+            android:layout_width="20dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/darkGrey"
+            android:textSize="10sp"
+            android:text="0" />
 
-    <TextView
-        android:id="@+id/tvLosses"
-        android:layout_width="20dp"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textSize="12sp"
-        android:textColor="@color/black"
-        android:text="L" />
+        <TextView
+            android:id="@+id/tvDraws"
+            android:layout_width="20dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/darkGrey"
+            android:textSize="10sp"
+            android:text="0" />
 
-    <TextView
-        android:id="@+id/tvGF"
-        android:layout_width="25dp"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textSize="12sp"
-        android:textColor="@color/black"
-        android:text="GF" />
+        <TextView
+            android:id="@+id/tvLosses"
+            android:layout_width="20dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/darkGrey"
+            android:textSize="10sp"
+            android:text="0" />
 
-    <TextView
-        android:id="@+id/tvGA"
-        android:layout_width="25dp"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textSize="12sp"
-        android:textColor="@color/black"
-        android:text="GA" />
+        <TextView
+            android:id="@+id/tvGF"
+            android:layout_width="22dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/darkGrey"
+            android:textSize="10sp"
+            android:text="0" />
 
-    <TextView
-        android:id="@+id/tvGD"
-        android:layout_width="25dp"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textColor="@color/black"
-        android:textSize="12sp"
-        android:text="GD" />
+        <TextView
+            android:id="@+id/tvGA"
+            android:layout_width="22dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/darkGrey"
+            android:textSize="10sp"
+            android:text="0" />
 
-    <TextView
-        android:id="@+id/tvPoints"
-        android:layout_width="30dp"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textSize="12sp"
-        android:text="Pts"
-        android:textColor="@color/black"
-        android:textStyle="bold" />
+        <TextView
+            android:id="@+id/tvGD"
+            android:layout_width="22dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/darkGrey"
+            android:textSize="10sp"
+            android:text="0" />
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/tvPoints"
+            android:layout_width="28dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/primaryMaroon"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:text="0" />
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

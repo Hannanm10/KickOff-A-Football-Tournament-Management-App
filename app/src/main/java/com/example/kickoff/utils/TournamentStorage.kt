@@ -57,18 +57,27 @@ object TournamentStorage {
         saveTournaments(context, list)
     }
 
-    fun deleteTournament(context: Context, tournament: Tournament) {
-        val all = getTournaments(context)
-        all.removeIf { it.name == tournament.name }
-        saveTournaments(context, all)
-    }
-
     fun updateTournament(context: Context, oldName: String, newName: String) {
         val all = getTournaments(context)
-        val tournament = all.find { it.name == oldName }
-        tournament?.let {
-            all[all.indexOf(it)] = it.copy(name = newName)
+        val index = all.indexOfFirst { it.name == oldName }
+        if (index != -1) {
+            all[index] = all[index].copy(name = newName)
             saveTournaments(context, all)
+            
+            // Centralized Cascade
+            TeamStorage.updateTournamentNameInTeams(context, oldName, newName)
+            MatchStorage.updateTournamentNameInMatches(context, oldName, newName)
+        }
+    }
+
+    fun deleteTournament(context: Context, tournament: Tournament) {
+        val all = getTournaments(context)
+        if (all.removeIf { it.name == tournament.name }) {
+            saveTournaments(context, all)
+            
+            // Centralized Cascade
+            TeamStorage.deleteTeamsByTournament(context, tournament.name)
+            MatchStorage.deleteMatchesByTournament(context, tournament.name)
         }
     }
 }

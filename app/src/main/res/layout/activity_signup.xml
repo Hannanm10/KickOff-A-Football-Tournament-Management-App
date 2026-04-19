@@ -2,14 +2,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/primaryMaroon">
+    android:background="@color/darkMaroon">
 
-    <View
-        android:id="@+id/topView"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:background="@color/primaryMaroon"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
@@ -41,7 +35,7 @@
                 android:layout_gravity="center"
                 android:layout_marginBottom="24dp"
                 android:text="Join KickOff!"
-                android:textColor="@color/primaryMaroon"
+                android:textColor="@color/darkMaroon"
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
@@ -104,6 +98,7 @@
                 android:layout_marginTop="24dp"
                 android:text="Sign Up"
                 android:textColor="@color/accentGold"
+                android:backgroundTint="@color/darkMaroon"
                 android:textAllCaps="false"
                 android:textSize="16sp"
                 app:cornerRadius="8dp" />
