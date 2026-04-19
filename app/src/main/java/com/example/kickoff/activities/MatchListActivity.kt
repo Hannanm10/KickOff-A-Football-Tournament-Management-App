@@ -21,6 +21,15 @@ class MatchListActivity : AppCompatActivity() {
     private lateinit var list: MutableList<Match>
     private lateinit var adapter: MatchAdapter
 
+    private fun updateEmptyState() {
+        val tvEmpty = findViewById<TextView>(R.id.tvEmpty)
+        if (list.isEmpty()) {
+            tvEmpty.visibility = View.VISIBLE
+        } else {
+            tvEmpty.visibility = View.GONE
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_match_list)
@@ -32,7 +41,6 @@ class MatchListActivity : AppCompatActivity() {
 
         val recycler = findViewById<RecyclerView>(R.id.recyclerMatches)
         val btnAdd = findViewById<FloatingActionButton>(R.id.btnAddMatch)
-        val tvEmpty = findViewById<TextView>(R.id.tvEmpty)
 
         val tournament = intent.getStringExtra("tournament") ?: ""
         val teamFilter = intent.getStringExtra("team_filter")
@@ -51,13 +59,9 @@ class MatchListActivity : AppCompatActivity() {
             btnAdd.visibility = View.GONE // Hide add button in filtered view
         }
 
-        adapter = MatchAdapter(list, organizer)
+        adapter = MatchAdapter(list, organizer, onDataChanged = { updateEmptyState() })
 
-        if (list.isEmpty()) {
-            tvEmpty.visibility = View.VISIBLE
-        } else {
-            tvEmpty.visibility = View.GONE
-        }
+        updateEmptyState()
 
         recycler.layoutManager = LinearLayoutManager(this)
         recycler.adapter = adapter
@@ -82,13 +86,7 @@ class MatchListActivity : AppCompatActivity() {
         }
         list.addAll(allMatches)
         
-        val tvEmpty = findViewById<TextView>(R.id.tvEmpty)
-        if (list.isEmpty()) {
-            tvEmpty.visibility = View.VISIBLE
-        } else {
-            tvEmpty.visibility = View.GONE
-        }
-
+        updateEmptyState()
         adapter.notifyDataSetChanged()
     }
 }

@@ -33,8 +33,7 @@
             android:src="@android:drawable/ic_menu_myplaces"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/indicator"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/primaryMaroon" />
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <TextView
             android:id="@+id/tvTeamName"

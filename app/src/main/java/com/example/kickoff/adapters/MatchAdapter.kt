@@ -1,10 +1,12 @@
 package com.example.kickoff.adapters
 
 import android.app.AlertDialog
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -12,15 +14,20 @@ import com.example.kickoff.R
 import com.example.kickoff.models.Match
 import com.example.kickoff.utils.MatchStorage
 import com.example.kickoff.utils.SessionManager
+import com.example.kickoff.utils.ImageUtils
+import com.example.kickoff.utils.TeamStorage
 
 class MatchAdapter(
     private val list: List<Match>,
-    private val organizer: String
+    private val organizer: String,
+    private val onDataChanged: () -> Unit = {}
 ) : RecyclerView.Adapter<MatchAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val teamA = view.findViewById<TextView>(R.id.tvTeamA)
         val teamB = view.findViewById<TextView>(R.id.tvTeamB)
+        val logoA = view.findViewById<ImageView>(R.id.ivLogoA)
+        val logoB = view.findViewById<ImageView>(R.id.ivLogoB)
         val score = view.findViewById<TextView>(R.id.tvScore)
         val winner = view.findViewById<TextView>(R.id.tvWinner)
         val date = view.findViewById<TextView>(R.id.tvDate)
@@ -37,10 +44,34 @@ class MatchAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         val match = list[position]
+        val context = holder.itemView.context
 
         holder.teamA.text = match.teamA
         holder.teamB.text = match.teamB
         holder.score.text = "${match.scoreA} - ${match.scoreB}"
+
+        // Load logos
+        val teams = TeamStorage.getTeams(context, match.tournamentName)
+        val teamA = teams.find { it.name == match.teamA }
+        val teamB = teams.find { it.name == match.teamB }
+
+        if (teamA?.logoUri != null) {
+            val bitmap = ImageUtils.decodeSampledBitmapFromUri(context, Uri.parse(teamA.logoUri), 80, 80)
+            holder.logoA.setImageBitmap(bitmap)
+            holder.logoA.setColorFilter(null)
+        } else {
+            holder.logoA.setImageResource(android.R.drawable.ic_menu_myplaces)
+            holder.logoA.setColorFilter(context.getColor(R.color.primaryMaroon))
+        }
+
+        if (teamB?.logoUri != null) {
+            val bitmap = ImageUtils.decodeSampledBitmapFromUri(context, Uri.parse(teamB.logoUri), 80, 80)
+            holder.logoB.setImageBitmap(bitmap)
+            holder.logoB.setColorFilter(null)
+        } else {
+            holder.logoB.setImageResource(android.R.drawable.ic_menu_myplaces)
+            holder.logoB.setColorFilter(context.getColor(R.color.primaryMaroon))
+        }
 
         val result = when {
             match.scoreA > match.scoreB -> "Winner: ${match.teamA}"
@@ -90,6 +121,7 @@ class MatchAdapter(
                                     MatchStorage.updateMatch(context, match, newMatch)
                                     (list as MutableList)[position] = newMatch
                                     notifyItemChanged(position)
+                                    onDataChanged()
                                 }
                                 .setNegativeButton("Cancel", null)
                                 .show()
@@ -102,6 +134,7 @@ class MatchAdapter(
                                     MatchStorage.deleteMatch(context, match)
                                     (list as MutableList).removeAt(position)
                                     notifyItemRemoved(position)
+                                    onDataChanged()
                                 }
                                 .setNegativeButton("No", null)
                                 .show()

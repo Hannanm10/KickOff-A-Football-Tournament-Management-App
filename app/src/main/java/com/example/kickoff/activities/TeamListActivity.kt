@@ -25,6 +25,15 @@ class TeamListActivity : AppCompatActivity() {
     private lateinit var organizer: String
     private var currentUser: String = ""
 
+    private fun updateEmptyState() {
+        val tvEmpty = findViewById<TextView>(R.id.tvEmpty)
+        if (teamList.isEmpty()) {
+            tvEmpty.visibility = View.VISIBLE
+        } else {
+            tvEmpty.visibility = View.GONE
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_team_list)
@@ -36,7 +45,6 @@ class TeamListActivity : AppCompatActivity() {
 
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerTeams)
         val btnAdd = findViewById<FloatingActionButton>(R.id.btnAddTeam)
-        val tvEmpty = findViewById<TextView>(R.id.tvEmpty)
 
         // Get data from intent
         tournament = intent.getStringExtra("tournament") ?: ""
@@ -54,13 +62,9 @@ class TeamListActivity : AppCompatActivity() {
         // Load teams
         teamList = TeamStorage.getTeams(this, tournament)
 
-        adapter = TeamAdapter(teamList, organizer)
+        adapter = TeamAdapter(teamList, organizer, onDataChanged = { updateEmptyState() })
 
-        if (teamList.isEmpty()) {
-            tvEmpty.visibility = View.VISIBLE
-        } else {
-            tvEmpty.visibility = View.GONE
-        }
+        updateEmptyState()
 
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
@@ -79,6 +83,7 @@ class TeamListActivity : AppCompatActivity() {
         // Refresh data
         teamList.clear()
         teamList.addAll(TeamStorage.getTeams(this, tournament))
+        updateEmptyState()
         adapter.notifyDataSetChanged()
     }
 }

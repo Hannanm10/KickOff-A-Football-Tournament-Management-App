@@ -31,20 +31,20 @@ class AddTournamentActivity : AppCompatActivity() {
             val name = etName.text.toString().trim()
 
             if (name.isEmpty()) {
-                etName.error = "Enter tournament name"
+                etName.error = getString(R.string.error_empty_name)
                 return@setOnClickListener
             }
 
             val existing = TournamentStorage.getTournaments(this)
             if (existing.any { it.name.equals(name, ignoreCase = true) }) {
-                etName.error = "A tournament with this name already exists"
+                etName.error = getString(R.string.error_duplicate_tournament)
                 return@setOnClickListener
             }
 
             val tournament = Tournament(name, currentUser)
             TournamentStorage.addTournament(this, tournament)
 
-            Toast.makeText(this, "Tournament Created", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, R.string.msg_tournament_created, Toast.LENGTH_SHORT).show()
 
             finish()
         }

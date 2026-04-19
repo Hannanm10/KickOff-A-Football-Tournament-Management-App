@@ -72,7 +72,7 @@ class AddMatchActivity : AppCompatActivity() {
             val teamB = spTeamB.selectedItem?.toString() ?: ""
 
             if (teamA == teamB) {
-                Toast.makeText(this, "A team cannot play against itself", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, R.string.error_self_match, Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -80,11 +80,11 @@ class AddMatchActivity : AppCompatActivity() {
             val sB = scoreB.text.toString()
 
             if (sA.isBlank()) {
-                scoreA.error = "Enter score"
+                scoreA.error = getString(R.string.error_invalid_score)
                 return@setOnClickListener
             }
             if (sB.isBlank()) {
-                scoreB.error = "Enter score"
+                scoreB.error = getString(R.string.error_invalid_score)
                 return@setOnClickListener
             }
 
@@ -92,11 +92,11 @@ class AddMatchActivity : AppCompatActivity() {
             val valB = sB.toIntOrNull()
 
             if (valA == null || valA < 0) {
-                scoreA.error = "Invalid score"
+                scoreA.error = getString(R.string.error_invalid_score)
                 return@setOnClickListener
             }
             if (valB == null || valB < 0) {
-                scoreB.error = "Invalid score"
+                scoreB.error = getString(R.string.error_invalid_score)
                 return@setOnClickListener
             }
 
@@ -122,7 +122,7 @@ class AddMatchActivity : AppCompatActivity() {
 
             MatchStorage.addMatch(this, match)
 
-            Toast.makeText(this, "Match Saved", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, R.string.msg_match_saved, Toast.LENGTH_SHORT).show()
             finish()
         }
     }

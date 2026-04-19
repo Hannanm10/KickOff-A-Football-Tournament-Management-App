@@ -25,7 +25,8 @@ object TeamStorage {
 
                 val team = Team(
                     obj.getString("name"),
-                    obj.getString("tournamentName")
+                    obj.getString("tournamentName"),
+                    if (obj.has("logoUri") && !obj.isNull("logoUri")) obj.getString("logoUri") else null
                 )
 
                 if (team.tournamentName == tournament) {
@@ -52,6 +53,7 @@ object TeamStorage {
             val obj = JSONObject()
             obj.put("name", it.name)
             obj.put("tournamentName", it.tournamentName)
+            obj.put("logoUri", it.logoUri)
             arr.put(obj)
         }
 
@@ -100,6 +102,21 @@ object TeamStorage {
         if (all.size != initialSize) saveTeams(context, all)
     }
 
+    fun updateTeamFull(context: Context, team: Team, newName: String, newLogoUri: String?) {
+        val all = getAllTeams(context)
+        val index = all.indexOfFirst { it.name == team.name && it.tournamentName == team.tournamentName }
+        if (index != -1) {
+            val oldName = team.name
+            all[index] = all[index].copy(name = newName, logoUri = newLogoUri)
+            saveTeams(context, all)
+            
+            if (oldName != newName) {
+                // Cascade update to matches
+                MatchStorage.updateTeamNameInMatches(context, team.tournamentName, oldName, newName)
+            }
+        }
+    }
+
     private fun saveTeams(context: Context, list: List<Team>) {
         val pref = context.getSharedPreferences(PREF, Context.MODE_PRIVATE)
         val editor = pref.edit()
@@ -108,6 +125,7 @@ object TeamStorage {
             val obj = JSONObject()
             obj.put("name", it.name)
             obj.put("tournamentName", it.tournamentName)
+            obj.put("logoUri", it.logoUri)
             arr.put(obj)
         }
         editor.putString(KEY, arr.toString())
@@ -130,7 +148,8 @@ object TeamStorage {
                 list.add(
                     Team(
                         obj.getString("name"),
-                        obj.getString("tournamentName")
+                        obj.getString("tournamentName"),
+                        if (obj.has("logoUri") && !obj.isNull("logoUri")) obj.getString("logoUri") else null
                     )
                 )
             }

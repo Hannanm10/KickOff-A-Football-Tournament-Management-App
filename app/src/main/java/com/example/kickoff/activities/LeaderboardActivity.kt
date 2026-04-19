@@ -41,12 +41,17 @@ class LeaderboardActivity : AppCompatActivity() {
         loadLeaderboard()
     }
 
+    override fun onResume() {
+        super.onResume()
+        loadLeaderboard()
+    }
+
     private fun loadLeaderboard() {
         val teams = TeamStorage.getTeams(this, tournamentName)
         val matches = MatchStorage.getMatches(this, tournamentName)
 
         val leaderboard = teams.map { team ->
-            val entry = LeaderboardEntry(team.name)
+            val entry = LeaderboardEntry(team.name, team.logoUri)
             matches.forEach { match ->
                 if (match.teamA == team.name || match.teamB == team.name) {
                     entry.matchesPlayed++

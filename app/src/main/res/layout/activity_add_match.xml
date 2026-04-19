@@ -11,7 +11,7 @@
         android:background="@color/darkMaroon"
         android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
         app:layout_constraintTop_toTopOf="parent"
-        app:title="Add New Match"
+        app:title="@string/add_new_match"
         app:titleCentered="@android:bool/config_enableMaterialDesignInPackageInstaller"
         app:titleTextColor="@color/white" />
 
@@ -26,7 +26,9 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             app:cardCornerRadius="16dp"
-            app:cardElevation="4dp">
+            app:cardElevation="4dp"
+            app:strokeColor="@color/white"
+            app:strokeWidth="1dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -46,7 +48,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
-                    android:text="Match Details"
+                    android:text="@string/match_details"
                     android:textColor="@color/primaryMaroon"
                     android:layout_gravity="center"
                     android:textSize="20sp"
@@ -55,7 +57,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Select Home Team"
+                    android:text="@string/select_home_team"
                     android:textSize="12sp"
                     android:textColor="@color/primaryMaroon"/>
                 <Spinner
@@ -67,7 +69,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Select Away Team"
+                    android:text="@string/select_away_team"
                     android:textSize="12sp"
                     android:textColor="@color/primaryMaroon"/>
                 <Spinner
@@ -135,8 +137,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:layout_marginTop="24dp"
-                    android:text="Save Match"
+                    android:text="@string/save_match"
                     android:textColor="@color/accentGold"
+                    android:backgroundTint="@color/primaryMaroon"
                     android:textAllCaps="false"
                     app:cornerRadius="8dp" />
 

@@ -1,7 +1,9 @@
 package com.example.kickoff.activities
 
-import android.content.Intent
+import  android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
@@ -21,29 +23,31 @@ class TournamentListActivity : AppCompatActivity() {
     private lateinit var adapter: TournamentAdapter
     private lateinit var tournamentList: MutableList<Tournament>
 
+    private fun updateEmptyState() {
+        val tvEmpty = findViewById<TextView>(R.id.tvEmpty)
+        if (tournamentList.isEmpty()) {
+            tvEmpty.visibility = View.VISIBLE
+        } else {
+            tvEmpty.visibility = View.GONE
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tournament_list)
 
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
         val btnAdd = findViewById<FloatingActionButton>(R.id.btnAddTournament)
-        val tvEmpty = findViewById<TextView>(R.id.tvEmpty)
         val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        val currentUser = SessionManager.getUser(this) ?: ""
-
         tournamentList = TournamentStorage.getTournaments(this)
 
-        adapter = TournamentAdapter(tournamentList) {
+        adapter = TournamentAdapter(tournamentList, onDataChanged = { updateEmptyState() }) {
             Toast.makeText(this, it.name, Toast.LENGTH_SHORT).show()
         }
 
-        if (tournamentList.isEmpty()) {
-            tvEmpty.visibility = View.VISIBLE
-        } else {
-            tvEmpty.visibility = View.GONE
-        }
+        updateEmptyState()
 
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
@@ -53,11 +57,31 @@ class TournamentListActivity : AppCompatActivity() {
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_logout -> {
+                SessionManager.logout(this)
+                val intent = Intent(this, LoginActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+                finish()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
     override fun onResume() {
         super.onResume()
 
         tournamentList.clear()
         tournamentList.addAll(TournamentStorage.getTournaments(this))
+        updateEmptyState()
         adapter.notifyDataSetChanged()
     }
 }

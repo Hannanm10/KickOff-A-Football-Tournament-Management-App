@@ -17,6 +17,7 @@ import com.example.kickoff.utils.TournamentStorage
 
 class TournamentAdapter(
     private val list: List<Tournament>,
+    private val onDataChanged: () -> Unit = {},
     private val onClick: (Tournament) -> Unit
 ) : RecyclerView.Adapter<TournamentAdapter.ViewHolder>() {
 
@@ -37,7 +38,7 @@ class TournamentAdapter(
         val tournament = list[position]
 
         holder.name.text = tournament.name
-        holder.organizer.text = "Organizer: ${tournament.organizer}"
+        holder.organizer.text = holder.itemView.context.getString(R.string.organizer_label, tournament.organizer)
 
         holder.itemView.setOnClickListener {
             val context = holder.itemView.context
@@ -58,47 +59,42 @@ class TournamentAdapter(
 
             if (!isOrganizer) return@setOnLongClickListener true
 
-            val options = arrayOf("Edit", "Delete")
+            val options = arrayOf(context.getString(R.string.edit), context.getString(R.string.delete))
             AlertDialog.Builder(context)
-                .setTitle("Manage Tournament")
+                .setTitle(R.string.manage_tournament)
                 .setItems(options) { _, which ->
                     when (which) {
                         0 -> { // Edit
                             val editText = android.widget.EditText(context)
                             editText.setText(tournament.name)
                             AlertDialog.Builder(context)
-                                .setTitle("Edit Tournament Name")
+                                .setTitle(R.string.edit)
                                 .setView(editText)
-                                .setPositiveButton("Update") { _, _ ->
-                                    val newName = editText.text.toString()
+                                .setPositiveButton(android.R.string.ok) { _, _ ->
+                                    val newName = editText.text.toString().trim()
                                     if (newName.isNotEmpty()) {
                                         TournamentStorage.updateTournament(context, tournament.name, newName)
                                         
-                                        // Cascade update to Teams and Matches
-                                        TeamStorage.updateTournamentNameInTeams(context, tournament.name, newName)
-                                        MatchStorage.updateTournamentNameInMatches(context, tournament.name, newName)
-
                                         (list as MutableList)[position] = tournament.copy(name = newName)
                                         notifyItemChanged(position)
+                                        onDataChanged()
                                     }
                                 }
-                                .setNegativeButton("Cancel", null)
+                                .setNegativeButton(android.R.string.cancel, null)
                                 .show()
                         }
                         1 -> { // Delete
                             AlertDialog.Builder(context)
-                                .setTitle("Delete Tournament")
-                                .setMessage("Are you sure? This will delete all teams and matches in this tournament.")
-                                .setPositiveButton("Yes") { _, _ ->
+                                .setTitle(R.string.delete)
+                                .setMessage(R.string.confirm_delete)
+                                .setPositiveButton(R.string.yes) { _, _ ->
                                     TournamentStorage.deleteTournament(context, tournament)
-                                    // Cascade delete to Teams and Matches
-                                    TeamStorage.deleteTeamsByTournament(context, tournament.name)
-                                    MatchStorage.deleteMatchesByTournament(context, tournament.name)
 
                                     (list as MutableList).removeAt(position)
                                     notifyItemRemoved(position)
+                                    onDataChanged()
                                 }
-                                .setNegativeButton("No", null)
+                                .setNegativeButton(R.string.no, null)
                                 .show()
                         }
                     }
