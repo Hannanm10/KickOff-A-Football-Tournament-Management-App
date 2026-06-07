@@ -46,12 +46,14 @@
         <activity
             android:name=".activities.LoginActivity"
             android:exported="false" />
-
         <activity
             android:name=".activities.TournamentListActivity"
             android:exported="false" />
         <activity
             android:name=".activities.LeaderboardActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.AnalyticsActivity"
             android:exported="false" />
     </application>
 

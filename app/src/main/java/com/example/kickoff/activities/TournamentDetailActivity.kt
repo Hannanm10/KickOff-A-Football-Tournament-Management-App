@@ -31,6 +31,7 @@ class TournamentDetailActivity : AppCompatActivity() {
         val btnTeams = findViewById<MaterialCardView>(R.id.btnTeamsCard)
         val btnMatches = findViewById<MaterialCardView>(R.id.btnMatchesCard)
         val btnLeaderboard = findViewById<MaterialCardView>(R.id.btnLeaderboardCard)
+        val btnAnalytics = findViewById<MaterialCardView>(R.id.btnAnalyticsCard)
 
         btnTeams.setOnClickListener {
             val intent = Intent(this, TeamListActivity::class.java)
@@ -48,6 +49,13 @@ class TournamentDetailActivity : AppCompatActivity() {
 
         btnLeaderboard.setOnClickListener {
             val intent = Intent(this, LeaderboardActivity::class.java)
+            intent.putExtra("tournamentId", tournamentId)
+            intent.putExtra("tournamentName", tournamentName)
+            startActivity(intent)
+        }
+
+        btnAnalytics.setOnClickListener {
+            val intent = Intent(this, AnalyticsActivity::class.java)
             intent.putExtra("tournamentId", tournamentId)
             intent.putExtra("tournamentName", tournamentName)
             startActivity(intent)

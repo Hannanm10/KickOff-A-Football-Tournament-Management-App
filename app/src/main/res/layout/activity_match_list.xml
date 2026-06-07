@@ -23,7 +23,7 @@
         android:clipToPadding="false"
         android:paddingVertical="8dp"
         android:layoutAnimation="@anim/layout_animation_fall_down"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/btnGenerateFixtures"
         app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
     <ProgressBar
@@ -49,6 +49,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnGenerateFixtures"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="Generate Fixtures"
+        android:visibility="gone"
+        android:backgroundTint="@color/accentGold"
+        android:textColor="@color/primaryMaroon"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btnAddMatch"
         android:layout_width="wrap_content"
@@ -57,7 +68,7 @@
         android:contentDescription="Add Match"
         android:src="@android:drawable/ic_input_add"
         app:backgroundTint="@color/accentGold"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/btnGenerateFixtures"
         app:layout_constraintEnd_toEndOf="parent"
         app:tint="@color/primaryMaroon" />
 
