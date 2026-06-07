@@ -5,11 +5,11 @@ data class Match(
     var tournamentId: String = "",
     var teamAId: String = "",
     var teamBId: String = "",
-    var scoreA: Int = 0,
-    var scoreB: Int = 0,
+    var scoreA: Int = -1,
+    var scoreB: Int = -1,
     var teamAName: String = "", 
     var teamBName: String = "", 
     var matchDate: String = "",
-    var status: String = "UPCOMING",
+    var status: String = "UPCOMING", // UPCOMING, COMPLETED
     var createdAt: Long = System.currentTimeMillis()
 )

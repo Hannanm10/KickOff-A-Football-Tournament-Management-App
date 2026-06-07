@@ -17,22 +17,32 @@
         android:background="@color/accentGold">
 
         <TextView
+            android:id="@+id/tvMatchStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Upcoming"
+            android:textColor="@color/primaryMaroon"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:textAllCaps="true"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
             android:id="@+id/tvDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:text="Date: 2023-10-25"
             android:textColor="@color/darkGrey"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
             android:id="@+id/scoreContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="12dp"
             android:gravity="center"
             android:orientation="horizontal"
             app:layout_constraintTop_toBottomOf="@id/tvDate">

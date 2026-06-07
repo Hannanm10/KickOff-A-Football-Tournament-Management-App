@@ -26,6 +26,7 @@ class MatchAdapter(
         val score = view.findViewById<TextView>(R.id.tvScore)
         val winner = view.findViewById<TextView>(R.id.tvWinner)
         val date = view.findViewById<TextView>(R.id.tvDate)
+        val statusBadge = view.findViewById<TextView>(R.id.tvMatchStatus)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -42,16 +43,25 @@ class MatchAdapter(
 
         holder.teamA.text = match.teamAName
         holder.teamB.text = match.teamBName
-        holder.score.text = "${match.scoreA} - ${match.scoreB}"
-
-        val result = when {
-            match.scoreA > match.scoreB -> "Winner: ${match.teamAName}"
-            match.scoreB > match.scoreA -> "Winner: ${match.teamBName}"
-            else -> "Result: Draw"
-        }
-
-        holder.winner.text = result
         holder.date.text = "Date: ${match.matchDate.ifEmpty { "N/A" }}"
+        holder.statusBadge.text = match.status
+
+        if (match.status == "UPCOMING") {
+            holder.score.text = "VS"
+            holder.score.setBackgroundResource(R.drawable.bg_score_badge_upcoming) // New drawable needed or reuse
+            holder.winner.visibility = View.GONE
+        } else {
+            holder.score.text = "${match.scoreA} - ${match.scoreB}"
+            holder.score.setBackgroundResource(R.drawable.bg_score_badge)
+            holder.winner.visibility = View.VISIBLE
+            
+            val result = when {
+                match.scoreA > match.scoreB -> "Winner: ${match.teamAName}"
+                match.scoreB > match.scoreA -> "Winner: ${match.teamBName}"
+                else -> "Result: Draw"
+            }
+            holder.winner.text = result
+        }
 
         holder.itemView.setOnLongClickListener {
             checkPermissionAndShowMenu(context, match)
@@ -71,7 +81,7 @@ class MatchAdapter(
     }
 
     private fun showManageMenu(context: android.content.Context, match: Match) {
-        val options = arrayOf("Edit Scores", "Delete")
+        val options = arrayOf("Update Result", "Delete")
         AlertDialog.Builder(context)
             .setTitle("Manage Match")
             .setItems(options) { _, which ->
@@ -90,20 +100,20 @@ class MatchAdapter(
 
         val etScoreA = EditText(context)
         etScoreA.hint = "Score ${match.teamAName}"
-        etScoreA.setText(match.scoreA.toString())
+        if (match.scoreA >= 0) etScoreA.setText(match.scoreA.toString())
         etScoreA.inputType = android.text.InputType.TYPE_CLASS_NUMBER
         layout.addView(etScoreA)
 
         val etScoreB = EditText(context)
         etScoreB.hint = "Score ${match.teamBName}"
-        etScoreB.setText(match.scoreB.toString())
+        if (match.scoreB >= 0) etScoreB.setText(match.scoreB.toString())
         etScoreB.inputType = android.text.InputType.TYPE_CLASS_NUMBER
         layout.addView(etScoreB)
 
         AlertDialog.Builder(context)
-            .setTitle("Edit Scores")
+            .setTitle("Enter Scores")
             .setView(layout)
-            .setPositiveButton("Update") { _, _ ->
+            .setPositiveButton("Save") { _, _ ->
                 val sA = etScoreA.text.toString().toIntOrNull() ?: match.scoreA
                 val sB = etScoreB.text.toString().toIntOrNull() ?: match.scoreB
                 
