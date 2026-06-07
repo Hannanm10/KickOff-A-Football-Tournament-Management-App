@@ -2,17 +2,21 @@ package com.example.kickoff.activities
 
 import android.app.DatePickerDialog
 import android.os.Bundle
+import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.kickoff.R
 import com.example.kickoff.models.Match
-import com.example.kickoff.utils.MatchStorage
-import com.example.kickoff.utils.TeamStorage
+import com.example.kickoff.models.Team
+import com.example.kickoff.repositories.MatchRepository
+import com.example.kickoff.repositories.TeamRepository
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.textfield.TextInputEditText
 import java.util.*
 
 class AddMatchActivity : AppCompatActivity() {
+
+    private var teamList = mutableListOf<Team>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,7 +27,7 @@ class AddMatchActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         toolbar.setNavigationOnClickListener { onBackPressed() }
 
-        val tournament = intent.getStringExtra("tournament") ?: ""
+        val tournamentId = intent.getStringExtra("tournamentId") ?: ""
 
         val spTeamA = findViewById<Spinner>(R.id.spTeamA)
         val spTeamB = findViewById<Spinner>(R.id.spTeamB)
@@ -46,84 +50,69 @@ class AddMatchActivity : AppCompatActivity() {
             dpd.show()
         }
 
-        // Load teams
-        val teamList = TeamStorage.getTeams(this, tournament)
-        val teamNames = teamList.map { it.name }
+        TeamRepository.getTeamsByTournament(tournamentId) { list ->
+            teamList.clear()
+            teamList.addAll(list)
+            
+            if (teamList.size < 2) {
+                Toast.makeText(this, "Add at least 2 teams first", Toast.LENGTH_LONG).show()
+                finish()
+                return@getTeamsByTournament
+            }
 
-        if (teamNames.size < 2) {
-            Toast.makeText(this, "Add at least 2 teams to the tournament first", Toast.LENGTH_LONG).show()
-            finish()
-            return
+            val teamNames = teamList.map { it.name }
+            val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, teamNames).apply {
+                setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            }
+            spTeamA.adapter = adapter
+            spTeamB.adapter = adapter
         }
-
-        val adapter = ArrayAdapter(
-            this,
-            android.R.layout.simple_spinner_item,
-            teamNames
-        ).apply {
-            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        }
-
-        spTeamA.adapter = adapter
-        spTeamB.adapter = adapter
 
         btnSave.setOnClickListener {
-            val teamA = spTeamA.selectedItem?.toString() ?: ""
-            val teamB = spTeamB.selectedItem?.toString() ?: ""
+            val posA = spTeamA.selectedItemPosition
+            val posB = spTeamB.selectedItemPosition
 
-            if (teamA == teamB) {
-                Toast.makeText(this, R.string.error_self_match, Toast.LENGTH_SHORT).show()
+            if (posA == posB) {
+                Toast.makeText(this, "Teams must be different", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
+
+            val teamA = teamList[posA]
+            val teamB = teamList[posB]
 
             val sA = scoreA.text.toString()
             val sB = scoreB.text.toString()
 
-            if (sA.isBlank()) {
-                scoreA.error = getString(R.string.error_invalid_score)
-                return@setOnClickListener
-            }
-            if (sB.isBlank()) {
-                scoreB.error = getString(R.string.error_invalid_score)
+            if (sA.isBlank() || sB.isBlank()) {
+                Toast.makeText(this, "Enter scores", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            val valA = sA.toIntOrNull()
-            val valB = sB.toIntOrNull()
-
-            if (valA == null || valA < 0) {
-                scoreA.error = getString(R.string.error_invalid_score)
-                return@setOnClickListener
-            }
-            if (valB == null || valB < 0) {
-                scoreB.error = getString(R.string.error_invalid_score)
-                return@setOnClickListener
-            }
-
-            // Check if match already exists (optional business rule)
-            val existingMatches = MatchStorage.getMatches(this, tournament)
-            val isDuplicate = existingMatches.any { 
-                (it.teamA == teamA && it.teamB == teamB) || (it.teamA == teamB && it.teamB == teamA) 
-            }
-            
-            if (isDuplicate) {
-                Toast.makeText(this, "This match pairing already exists", Toast.LENGTH_SHORT).show()
-                // Not blocking, just a warning or could block based on requirement
-            }
+            val valA = sA.toIntOrNull() ?: 0
+            val valB = sB.toIntOrNull() ?: 0
 
             val match = Match(
-                teamA,
-                teamB,
-                valA,
-                valB,
-                tournament,
-                etMatchDate.text.toString()
+                tournamentId = tournamentId,
+                teamAId = teamA.teamId,
+                teamBId = teamB.teamId,
+                teamAName = teamA.name,
+                teamBName = teamB.name,
+                scoreA = valA,
+                scoreB = valB,
+                matchDate = etMatchDate.text.toString(),
+                status = "COMPLETED"
             )
 
-            MatchStorage.addMatch(this, match)
-
-            Toast.makeText(this, R.string.msg_match_saved, Toast.LENGTH_SHORT).show()
-            finish()
+            btnSave.isEnabled = false
+            MatchRepository.addMatch(match) { success, error ->
+                btnSave.isEnabled = true
+                if (success) {
+                    Toast.makeText(this, "Match added", Toast.LENGTH_SHORT).show()
+                    finish()
+                } else {
+                    Toast.makeText(this, "Error: $error", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 }

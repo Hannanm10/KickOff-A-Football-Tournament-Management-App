@@ -43,10 +43,15 @@ class LeaderboardAdapter(
         holder.tvPos.text = (position + 1).toString()
         holder.tvName.text = entry.teamName
 
-        if (entry.logoUri != null) {
-            val bitmap = ImageUtils.decodeSampledBitmapFromUri(holder.itemView.context, android.net.Uri.parse(entry.logoUri), 60, 60)
-            holder.ivLogo.setImageBitmap(bitmap)
-            holder.ivLogo.setColorFilter(null)
+        if (!entry.logoUri.isNullOrEmpty()) {
+            try {
+                val bitmap = ImageUtils.decodeSampledBitmapFromUri(holder.itemView.context, android.net.Uri.parse(entry.logoUri), 60, 60)
+                holder.ivLogo.setImageBitmap(bitmap)
+                holder.ivLogo.setColorFilter(null)
+            } catch (e: Exception) {
+                holder.ivLogo.setImageResource(android.R.drawable.ic_menu_myplaces)
+                holder.ivLogo.setColorFilter(holder.itemView.context.getColor(R.color.primaryMaroon))
+            }
         } else {
             holder.ivLogo.setImageResource(android.R.drawable.ic_menu_myplaces)
             holder.ivLogo.setColorFilter(holder.itemView.context.getColor(R.color.primaryMaroon))

@@ -9,18 +9,19 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kickoff.R
 import com.example.kickoff.models.Match
-import com.example.kickoff.utils.MatchStorage
-import com.example.kickoff.utils.SessionManager
+import com.example.kickoff.repositories.MatchRepository
+import com.example.kickoff.repositories.TeamRepository
 import com.example.kickoff.utils.ImageUtils
-import com.example.kickoff.utils.TeamStorage
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 
 class MatchAdapter(
     private val list: List<Match>,
-    private val organizer: String,
-    private val onDataChanged: () -> Unit = {}
+    private val tournamentId: String
 ) : RecyclerView.Adapter<MatchAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -42,107 +43,132 @@ class MatchAdapter(
     override fun getItemCount(): Int = list.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-
         val match = list[position]
         val context = holder.itemView.context
 
-        holder.teamA.text = match.teamA
-        holder.teamB.text = match.teamB
+        holder.teamA.text = match.teamAName
+        holder.teamB.text = match.teamBName
         holder.score.text = "${match.scoreA} - ${match.scoreB}"
 
-        // Load logos
-        val teams = TeamStorage.getTeams(context, match.tournamentName)
-        val teamA = teams.find { it.name == match.teamA }
-        val teamB = teams.find { it.name == match.teamB }
+        // Fetch logos from TeamRepository
+        TeamRepository.getTeamsByTournament(tournamentId) { teams ->
+            val teamA = teams.find { it.teamId == match.teamAId }
+            val teamB = teams.find { it.teamId == match.teamBId }
 
-        if (teamA?.logoUri != null) {
-            val bitmap = ImageUtils.decodeSampledBitmapFromUri(context, Uri.parse(teamA.logoUri), 80, 80)
-            holder.logoA.setImageBitmap(bitmap)
-            holder.logoA.setColorFilter(null)
-        } else {
-            holder.logoA.setImageResource(android.R.drawable.ic_menu_myplaces)
-            holder.logoA.setColorFilter(context.getColor(R.color.primaryMaroon))
-        }
+            if (teamA?.logoUrl?.isNotEmpty() == true) {
+                try {
+                    holder.logoA.setImageURI(Uri.parse(teamA.logoUrl))
+                    holder.logoA.setColorFilter(null)
+                } catch (e: Exception) {
+                    holder.logoA.setImageResource(android.R.drawable.ic_menu_myplaces)
+                }
+            } else {
+                holder.logoA.setImageResource(android.R.drawable.ic_menu_myplaces)
+                holder.logoA.setColorFilter(context.getColor(R.color.primaryMaroon))
+            }
 
-        if (teamB?.logoUri != null) {
-            val bitmap = ImageUtils.decodeSampledBitmapFromUri(context, Uri.parse(teamB.logoUri), 80, 80)
-            holder.logoB.setImageBitmap(bitmap)
-            holder.logoB.setColorFilter(null)
-        } else {
-            holder.logoB.setImageResource(android.R.drawable.ic_menu_myplaces)
-            holder.logoB.setColorFilter(context.getColor(R.color.primaryMaroon))
+            if (teamB?.logoUrl?.isNotEmpty() == true) {
+                try {
+                    holder.logoB.setImageURI(Uri.parse(teamB.logoUrl))
+                    holder.logoB.setColorFilter(null)
+                } catch (e: Exception) {
+                    holder.logoB.setImageResource(android.R.drawable.ic_menu_myplaces)
+                }
+            } else {
+                holder.logoB.setImageResource(android.R.drawable.ic_menu_myplaces)
+                holder.logoB.setColorFilter(context.getColor(R.color.primaryMaroon))
+            }
         }
 
         val result = when {
-            match.scoreA > match.scoreB -> "Winner: ${match.teamA}"
-            match.scoreB > match.scoreA -> "Winner: ${match.teamB}"
+            match.scoreA > match.scoreB -> "Winner: ${match.teamAName}"
+            match.scoreB > match.scoreA -> "Winner: ${match.teamBName}"
             else -> "Result: Draw"
         }
 
         holder.winner.text = result
-        holder.date.text = "Date: ${match.date.ifEmpty { "N/A" }}"
+        holder.date.text = "Date: ${match.matchDate.ifEmpty { "N/A" }}"
 
         holder.itemView.setOnLongClickListener {
-            val context = holder.itemView.context
-            val currentUser = SessionManager.getUser(context)
-
-            if (currentUser != organizer) return@setOnLongClickListener true
-
-            val options = arrayOf("Edit Scores", "Delete")
-            AlertDialog.Builder(context)
-                .setTitle("Manage Match")
-                .setItems(options) { _, which ->
-                    when (which) {
-                        0 -> { // Edit Scores
-                            val layout = LinearLayout(context)
-                            layout.orientation = LinearLayout.VERTICAL
-                            layout.setPadding(50, 20, 50, 20)
-
-                            val etScoreA = EditText(context)
-                            etScoreA.hint = "Score ${match.teamA}"
-                            etScoreA.setText(match.scoreA.toString())
-                            etScoreA.inputType = android.text.InputType.TYPE_CLASS_NUMBER
-                            layout.addView(etScoreA)
-
-                            val etScoreB = EditText(context)
-                            etScoreB.hint = "Score ${match.teamB}"
-                            etScoreB.setText(match.scoreB.toString())
-                            etScoreB.inputType = android.text.InputType.TYPE_CLASS_NUMBER
-                            layout.addView(etScoreB)
-
-                            AlertDialog.Builder(context)
-                                .setTitle("Edit Scores")
-                                .setView(layout)
-                                .setPositiveButton("Update") { _, _ ->
-                                    val sA = etScoreA.text.toString().toIntOrNull() ?: match.scoreA
-                                    val sB = etScoreB.text.toString().toIntOrNull() ?: match.scoreB
-                                    
-                                    val newMatch = match.copy(scoreA = sA, scoreB = sB)
-                                    MatchStorage.updateMatch(context, match, newMatch)
-                                    (list as MutableList)[position] = newMatch
-                                    notifyItemChanged(position)
-                                    onDataChanged()
-                                }
-                                .setNegativeButton("Cancel", null)
-                                .show()
-                        }
-                        1 -> { // Delete
-                            AlertDialog.Builder(context)
-                                .setTitle("Delete Match")
-                                .setMessage("Are you sure?")
-                                .setPositiveButton("Yes") { _, _ ->
-                                    MatchStorage.deleteMatch(context, match)
-                                    (list as MutableList).removeAt(position)
-                                    notifyItemRemoved(position)
-                                    onDataChanged()
-                                }
-                                .setNegativeButton("No", null)
-                                .show()
-                        }
-                    }
-                }
-                .show()
+            checkPermissionAndShowMenu(context, match)
             true
         }
+    }
+
+    private fun checkPermissionAndShowMenu(context: android.content.Context, match: Match) {
+        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        FirebaseDatabase.getInstance().getReference("tournaments").child(tournamentId).get()
+            .addOnSuccessListener { snapshot ->
+                val organizerId = snapshot.child("organizerId").getValue(String::class.java)
+                if (currentUserId == organizerId) {
+                    showManageMenu(context, match)
+                }
+            }
+    }
+
+    private fun showManageMenu(context: android.content.Context, match: Match) {
+        val options = arrayOf("Edit Scores", "Delete")
+        AlertDialog.Builder(context)
+            .setTitle("Manage Match")
+            .setItems(options) { _, which ->
+                when (which) {
+                    0 -> showEditScoresDialog(context, match)
+                    1 -> showDeleteConfirmDialog(context, match)
+                }
+            }
+            .show()
+    }
+
+    private fun showEditScoresDialog(context: android.content.Context, match: Match) {
+        val layout = LinearLayout(context)
+        layout.orientation = LinearLayout.VERTICAL
+        layout.setPadding(50, 20, 50, 20)
+
+        val etScoreA = EditText(context)
+        etScoreA.hint = "Score ${match.teamAName}"
+        etScoreA.setText(match.scoreA.toString())
+        etScoreA.inputType = android.text.InputType.TYPE_CLASS_NUMBER
+        layout.addView(etScoreA)
+
+        val etScoreB = EditText(context)
+        etScoreB.hint = "Score ${match.teamBName}"
+        etScoreB.setText(match.scoreB.toString())
+        etScoreB.inputType = android.text.InputType.TYPE_CLASS_NUMBER
+        layout.addView(etScoreB)
+
+        AlertDialog.Builder(context)
+            .setTitle("Edit Scores")
+            .setView(layout)
+            .setPositiveButton("Update") { _, _ ->
+                val sA = etScoreA.text.toString().toIntOrNull() ?: match.scoreA
+                val sB = etScoreB.text.toString().toIntOrNull() ?: match.scoreB
+                
+                match.scoreA = sA
+                match.scoreB = sB
+                match.status = "COMPLETED"
+                
+                MatchRepository.updateMatch(match) { success, error ->
+                    if (!success) {
+                        Toast.makeText(context, "Error: $error", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun showDeleteConfirmDialog(context: android.content.Context, match: Match) {
+        AlertDialog.Builder(context)
+            .setTitle("Delete Match")
+            .setMessage("Are you sure?")
+            .setPositiveButton("Yes") { _, _ ->
+                MatchRepository.deleteMatch(match.matchId) { success, error ->
+                    if (!success) {
+                        Toast.makeText(context, "Error: $error", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+            .setNegativeButton("No", null)
+            .show()
     }
 }

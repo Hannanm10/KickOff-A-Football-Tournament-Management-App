@@ -24,12 +24,12 @@ object MatchStorage {
                 val obj = arr.getJSONObject(i)
 
                 val match = Match(
-                    obj.getString("teamA"),
-                    obj.getString("teamB"),
-                    obj.getInt("scoreA"),
-                    obj.getInt("scoreB"),
-                    obj.getString("tournamentName"),
-                    obj.optString("date", "")
+                    teamA = obj.getString("teamA"),
+                    teamB = obj.getString("teamB"),
+                    scoreA = obj.getInt("scoreA"),
+                    scoreB = obj.getInt("scoreB"),
+                    tournamentName = obj.getString("tournamentName"),
+                    date = obj.optString("date", "")
                 )
 
                 if (match.tournamentName == tournament) {
@@ -146,12 +146,12 @@ object MatchStorage {
 
                 list.add(
                     Match(
-                        obj.getString("teamA"),
-                        obj.getString("teamB"),
-                        obj.getInt("scoreA"),
-                        obj.getInt("scoreB"),
-                        obj.getString("tournamentName"),
-                        obj.optString("date", "")
+                        teamA = obj.getString("teamA"),
+                        teamB = obj.getString("teamB"),
+                        scoreA = obj.getInt("scoreA"),
+                        scoreB = obj.getInt("scoreB"),
+                        tournamentName = obj.getString("tournamentName"),
+                        date = obj.optString("date", "")
                     )
                 )
             }
