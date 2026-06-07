@@ -74,13 +74,37 @@ object TournamentRepository {
     }
 
     fun deleteTournament(tournamentId: String, onResult: (Boolean, String?) -> Unit) {
-        database.child(tournamentId).removeValue()
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    onResult(true, null)
-                } else {
-                    onResult(false, task.exception?.message)
+        val rootRef = FirebaseDatabase.getInstance().reference
+        
+        // Define all paths to be deleted
+        val updates = mutableMapOf<String, Any?>()
+        updates["tournaments/$tournamentId"] = null
+        
+        // We need to find all teams and matches associated with this tournament
+        rootRef.child("teams").orderByChild("tournamentId").equalTo(tournamentId).get()
+            .addOnSuccessListener { teamsSnapshot ->
+                teamsSnapshot.children.forEach { 
+                    updates["teams/${it.key}"] = null 
                 }
+                
+                rootRef.child("matches").orderByChild("tournamentId").equalTo(tournamentId).get()
+                    .addOnSuccessListener { matchesSnapshot ->
+                        matchesSnapshot.children.forEach { 
+                            updates["matches/${it.key}"] = null 
+                        }
+                        
+                        // Perform atomic delete
+                        rootRef.updateChildren(updates)
+                            .addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    onResult(true, null)
+                                } else {
+                                    onResult(false, task.exception?.message)
+                                }
+                            }
+                    }
+                    .addOnFailureListener { onResult(false, it.message) }
             }
+            .addOnFailureListener { onResult(false, it.message) }
     }
 }

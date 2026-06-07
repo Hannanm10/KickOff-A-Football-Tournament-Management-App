@@ -48,13 +48,27 @@ object TeamRepository {
     }
 
     fun deleteTeam(teamId: String, onResult: (Boolean, String?) -> Unit) {
-        database.child(teamId).removeValue()
-            .addOnCompleteListener { task ->
+        val rootRef = FirebaseDatabase.getInstance().reference
+        val updates = mutableMapOf<String, Any?>()
+        updates["teams/$teamId"] = null
+        
+        // Find matches involving this team
+        rootRef.child("matches").get().addOnSuccessListener { snapshot ->
+            snapshot.children.forEach { matchSnap ->
+                val teamAId = matchSnap.child("teamAId").getValue(String::class.java)
+                val teamBId = matchSnap.child("teamBId").getValue(String::class.java)
+                if (teamAId == teamId || teamBId == teamId) {
+                    updates["matches/${matchSnap.key}"] = null
+                }
+            }
+            
+            rootRef.updateChildren(updates).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     onResult(true, null)
                 } else {
                     onResult(false, task.exception?.message)
                 }
             }
+        }.addOnFailureListener { onResult(false, it.message) }
     }
 }
