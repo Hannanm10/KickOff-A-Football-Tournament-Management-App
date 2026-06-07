@@ -26,6 +26,9 @@ class LeaderboardActivity : AppCompatActivity() {
 
     private var teams = listOf<Team>()
     private var matches = listOf<Match>()
+    
+    private var teamListener: com.google.firebase.database.ValueEventListener? = null
+    private var matchListener: com.google.firebase.database.ValueEventListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,16 +58,25 @@ class LeaderboardActivity : AppCompatActivity() {
     private fun loadData() {
         progressBar.visibility = View.VISIBLE
         
-        // Use separate listeners to avoid nesting
-        TeamRepository.getTeamsByTournament(tournamentId) { teamList ->
+        // Remove existing if any (unlikely in onCreate but good for swipeRefresh)
+        teamListener?.let { TeamRepository.removeListener(it) }
+        matchListener?.let { MatchRepository.removeListener(it) }
+
+        teamListener = TeamRepository.getTeamsByTournament(tournamentId) { teamList ->
             teams = teamList
             calculateAndDisplay()
         }
         
-        MatchRepository.getMatchesByTournament(tournamentId) { matchList ->
+        matchListener = MatchRepository.getMatchesByTournament(tournamentId) { matchList ->
             matches = matchList
             calculateAndDisplay()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        teamListener?.let { TeamRepository.removeListener(it) }
+        matchListener?.let { MatchRepository.removeListener(it) }
     }
 
     private fun calculateAndDisplay() {

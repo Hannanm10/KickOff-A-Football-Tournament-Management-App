@@ -26,6 +26,7 @@ class MatchListActivity : AppCompatActivity() {
     private var teamFilterId: String? = null
     private lateinit var progressBar: ProgressBar
     private lateinit var tvEmpty: TextView
+    private var matchListener: com.google.firebase.database.ValueEventListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,7 +75,7 @@ class MatchListActivity : AppCompatActivity() {
 
     private fun loadMatches() {
         progressBar.visibility = View.VISIBLE
-        MatchRepository.getMatchesByTournament(tournamentId) { allMatches ->
+        matchListener = MatchRepository.getMatchesByTournament(tournamentId) { allMatches ->
             progressBar.visibility = View.GONE
             list.clear()
             if (teamFilterId != null) {
@@ -85,6 +86,11 @@ class MatchListActivity : AppCompatActivity() {
             adapter.notifyDataSetChanged()
             updateEmptyState()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        matchListener?.let { MatchRepository.removeListener(it) }
     }
 
     private fun updateEmptyState() {

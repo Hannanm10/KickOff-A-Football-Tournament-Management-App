@@ -42,7 +42,6 @@ class SignupActivity : AppCompatActivity() {
             
             UserRepository.signup(newUser, password) { success, error ->
                 if (success) {
-                    com.example.kickoff.utils.SessionManager.saveUser(this, newUser.username)
                     Toast.makeText(this, "Account created successfully", Toast.LENGTH_SHORT).show()
                     startActivity(Intent(this, LoginActivity::class.java))
                     finish()

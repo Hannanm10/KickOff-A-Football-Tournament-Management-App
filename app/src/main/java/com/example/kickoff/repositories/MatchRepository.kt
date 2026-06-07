@@ -23,23 +23,28 @@ object MatchRepository {
             }
     }
 
-    fun getMatchesByTournament(tournamentId: String, onDataChange: (List<Match>) -> Unit) {
-        database.orderByChild("tournamentId").equalTo(tournamentId)
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val list = mutableListOf<Match>()
-                    for (child in snapshot.children) {
-                        val match = child.getValue(Match::class.java)
-                        if (match != null) {
-                            list.add(match)
-                        }
+    fun getMatchesByTournament(tournamentId: String, onDataChange: (List<Match>) -> Unit): ValueEventListener {
+        val listener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val list = mutableListOf<Match>()
+                for (child in snapshot.children) {
+                    val match = child.getValue(Match::class.java)
+                    if (match != null) {
+                        list.add(match)
                     }
-                    onDataChange(list)
                 }
+                onDataChange(list)
+            }
 
-                override fun onCancelled(error: DatabaseError) {
-                }
-            })
+            override fun onCancelled(error: DatabaseError) {}
+        }
+        database.orderByChild("tournamentId").equalTo(tournamentId)
+            .addValueEventListener(listener)
+        return listener
+    }
+
+    fun removeListener(listener: ValueEventListener) {
+        database.removeEventListener(listener)
     }
 
     fun updateMatch(match: Match, onResult: (Boolean, String?) -> Unit) {

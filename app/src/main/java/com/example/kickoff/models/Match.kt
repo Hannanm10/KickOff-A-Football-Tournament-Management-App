@@ -7,15 +7,9 @@ data class Match(
     var teamBId: String = "",
     var scoreA: Int = 0,
     var scoreB: Int = 0,
-    var teamAName: String = "", // Helper field for UI
-    var teamBName: String = "", // Helper field for UI
+    var teamAName: String = "", 
+    var teamBName: String = "", 
     var matchDate: String = "",
-    var status: String = "UPCOMING", // UPCOMING, COMPLETED
-    var createdAt: Long = System.currentTimeMillis(),
-    
-    // Compatibility fields
-    var teamA: String = "",
-    var teamB: String = "",
-    var tournamentName: String = "",
-    var date: String = ""
+    var status: String = "UPCOMING",
+    var createdAt: Long = System.currentTimeMillis()
 )

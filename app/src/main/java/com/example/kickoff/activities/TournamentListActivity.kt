@@ -24,6 +24,7 @@ class TournamentListActivity : AppCompatActivity() {
     private var tournamentList = mutableListOf<Tournament>()
     private lateinit var progressBar: ProgressBar
     private lateinit var tvEmpty: TextView
+    private var tournamentListener: com.google.firebase.database.ValueEventListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,13 +57,18 @@ class TournamentListActivity : AppCompatActivity() {
 
     private fun loadTournaments() {
         progressBar.visibility = View.VISIBLE
-        TournamentRepository.getAllTournaments { list ->
+        tournamentListener = TournamentRepository.getAllTournaments { list ->
             progressBar.visibility = View.GONE
             tournamentList.clear()
             tournamentList.addAll(list)
             adapter.notifyDataSetChanged()
             updateEmptyState()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        tournamentListener?.let { TournamentRepository.removeListener(it) }
     }
 
     private fun updateEmptyState() {

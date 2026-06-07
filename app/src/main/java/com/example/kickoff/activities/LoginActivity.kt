@@ -31,13 +31,8 @@ class LoginActivity : AppCompatActivity() {
 
             UserRepository.login(email, password) { success, error ->
                 if (success) {
-                    UserRepository.getCurrentUser { user ->
-                        if (user != null) {
-                            com.example.kickoff.utils.SessionManager.saveUser(this, user.username)
-                        }
-                        startActivity(Intent(this, TournamentListActivity::class.java))
-                        finish()
-                    }
+                    startActivity(Intent(this, TournamentListActivity::class.java))
+                    finish()
                 } else {
                     Toast.makeText(this, "Login failed: $error", Toast.LENGTH_LONG).show()
                 }

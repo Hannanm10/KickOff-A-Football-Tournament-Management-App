@@ -42,8 +42,8 @@ object TournamentRepository {
             }
     }
 
-    fun getAllTournaments(onDataChange: (List<Tournament>) -> Unit) {
-        database.addValueEventListener(object : ValueEventListener {
+    fun getAllTournaments(onDataChange: (List<Tournament>) -> Unit): ValueEventListener {
+        val listener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val list = mutableListOf<Tournament>()
                 for (child in snapshot.children) {
@@ -55,10 +55,14 @@ object TournamentRepository {
                 onDataChange(list)
             }
 
-            override fun onCancelled(error: DatabaseError) {
-                // Handle error
-            }
-        })
+            override fun onCancelled(error: DatabaseError) {}
+        }
+        database.addValueEventListener(listener)
+        return listener
+    }
+
+    fun removeListener(listener: ValueEventListener) {
+        database.removeEventListener(listener)
     }
 
     fun updateTournament(tournamentId: String, newName: String, onResult: (Boolean, String?) -> Unit) {

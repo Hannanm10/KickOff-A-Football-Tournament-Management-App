@@ -15,17 +15,11 @@ class SplashActivity : AppCompatActivity() {
 
         Handler(Looper.getMainLooper()).postDelayed({
             if (UserRepository.isUserLoggedIn()) {
-                UserRepository.getCurrentUser { user ->
-                    if (user != null) {
-                        com.example.kickoff.utils.SessionManager.saveUser(this, user.username)
-                    }
-                    startActivity(Intent(this, TournamentListActivity::class.java))
-                    finish()
-                }
+                startActivity(Intent(this, TournamentListActivity::class.java))
             } else {
                 startActivity(Intent(this, LoginActivity::class.java))
-                finish()
             }
+            finish()
         }, 2000) // 2 seconds
     }
 }

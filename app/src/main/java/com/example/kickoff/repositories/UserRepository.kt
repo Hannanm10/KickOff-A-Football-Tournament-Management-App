@@ -8,13 +8,23 @@ object UserRepository {
     private val auth = FirebaseAuth.getInstance()
     private val database = FirebaseDatabase.getInstance().getReference("users")
 
+    init {
+        try {
+            FirebaseDatabase.getInstance().setPersistenceEnabled(true)
+        } catch (e: Exception) {
+            // Already enabled or other error
+        }
+    }
+
     fun signup(user: User, password: String, onResult: (Boolean, String?) -> Unit) {
         auth.createUserWithEmailAndPassword(user.email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val uid = task.result?.user?.uid ?: ""
                     user.uid = uid
-                    database.child(uid).setValue(user)
+                    // We don't want to store the password in the database
+                    val userProfile = user.copy() 
+                    database.child(uid).setValue(userProfile)
                         .addOnCompleteListener { dbTask ->
                             if (dbTask.isSuccessful) {
                                 onResult(true, null)
