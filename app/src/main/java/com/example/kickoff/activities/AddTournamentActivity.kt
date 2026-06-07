@@ -1,6 +1,8 @@
 package com.example.kickoff.activities
 
 import android.os.Bundle
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.kickoff.R
@@ -22,11 +24,18 @@ class AddTournamentActivity : AppCompatActivity() {
 
         val etName = findViewById<TextInputEditText>(R.id.etTournamentName)
         val etDescription = findViewById<TextInputEditText>(R.id.etTournamentDescription)
+        val rgFormat = findViewById<RadioGroup>(R.id.rgFormat)
         val btnSave = findViewById<MaterialButton>(R.id.btnSaveTournament)
 
         btnSave.setOnClickListener {
             val name = etName.text.toString().trim()
             val description = etDescription.text.toString().trim()
+            
+            val selectedFormat = if (rgFormat.checkedRadioButtonId == R.id.rbGroupKnockout) {
+                "GROUP_KNOCKOUT"
+            } else {
+                "LEAGUE"
+            }
 
             if (name.isEmpty()) {
                 Toast.makeText(this, "Enter tournament name", Toast.LENGTH_SHORT).show()
@@ -34,7 +43,7 @@ class AddTournamentActivity : AppCompatActivity() {
             }
 
             btnSave.isEnabled = false
-            TournamentRepository.createTournament(name, description) { success, error ->
+            TournamentRepository.createTournament(name, description, selectedFormat) { success, error ->
                 btnSave.isEnabled = true
                 if (success) {
                     Toast.makeText(this, "Tournament created", Toast.LENGTH_SHORT).show()

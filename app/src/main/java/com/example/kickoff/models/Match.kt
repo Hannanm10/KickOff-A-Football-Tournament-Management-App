@@ -11,5 +11,6 @@ data class Match(
     var teamBName: String = "", 
     var matchDate: String = "",
     var status: String = "UPCOMING", // UPCOMING, COMPLETED
+    var stage: String = "", // LEAGUE, GROUP, SEMI_FINAL, FINAL
     var createdAt: Long = System.currentTimeMillis()
 )

@@ -150,6 +150,13 @@ class MatchAdapter(
                 val sA = etScoreA.text.toString().toIntOrNull() ?: match.scoreA
                 val sB = etScoreB.text.toString().toIntOrNull() ?: match.scoreB
                 
+                if (match.stage == "SEMI_FINAL" || match.stage == "FINAL") {
+                    if (sA == sB) {
+                        Toast.makeText(context, "Draws are not allowed in knockout stages", Toast.LENGTH_SHORT).show()
+                        return@setPositiveButton
+                    }
+                }
+
                 match.scoreA = sA
                 match.scoreB = sB
                 

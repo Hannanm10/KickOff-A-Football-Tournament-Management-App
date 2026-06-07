@@ -8,10 +8,13 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.kickoff.R
 import com.example.kickoff.models.Match
 import com.example.kickoff.models.Team
+import com.example.kickoff.models.Tournament
 import com.example.kickoff.repositories.MatchRepository
 import com.example.kickoff.repositories.TeamRepository
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.progressindicator.CircularProgressIndicator
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
 class AnalyticsActivity : AppCompatActivity() {
@@ -32,9 +35,12 @@ class AnalyticsActivity : AppCompatActivity() {
     private lateinit var tvBestDefense: TextView
     private lateinit var tvMostWins: TextView
     private lateinit var tvMostDraws: TextView
+    private lateinit var tvMostLosses: TextView
+    private lateinit var cardLeader: MaterialCardView
 
     private var teams = listOf<Team>()
     private var matches = listOf<Match>()
+    private var tournament: Tournament? = null
     
     private var teamListener: ValueEventListener? = null
     private var matchListener: ValueEventListener? = null
@@ -53,6 +59,7 @@ class AnalyticsActivity : AppCompatActivity() {
         toolbar.title = "Analytics: $tournamentName"
 
         initUI()
+        loadTournament()
         loadData()
     }
 
@@ -70,6 +77,16 @@ class AnalyticsActivity : AppCompatActivity() {
         tvBestDefense = findViewById(R.id.tvBestDefense)
         tvMostWins = findViewById(R.id.tvMostWins)
         tvMostDraws = findViewById(R.id.tvMostDraws)
+        tvMostLosses = findViewById(R.id.tvMostLosses)
+        cardLeader = findViewById(R.id.cardLeader)
+    }
+
+    private fun loadTournament() {
+        FirebaseDatabase.getInstance().getReference("tournaments").child(tournamentId).get()
+            .addOnSuccessListener { snapshot ->
+                tournament = snapshot.getValue(Tournament::class.java)
+                calculateStats()
+            }
     }
 
     private fun loadData() {
@@ -87,8 +104,9 @@ class AnalyticsActivity : AppCompatActivity() {
     }
 
     private fun calculateStats() {
+        val t = tournament ?: return
         if (teams.isEmpty()) {
-            progressBar.visibility = View.GONE
+            progressBar.visibility = if (teams.isEmpty() && matches.isEmpty()) View.GONE else View.VISIBLE
             return
         }
 
@@ -97,11 +115,9 @@ class AnalyticsActivity : AppCompatActivity() {
         val completedMatches = matches.count { it.status == "COMPLETED" }
         val totalGoals = matches.filter { it.status == "COMPLETED" }.sumOf { it.scoreA + it.scoreB }
         
-        // Progress
         val progress = if (totalMatches > 0) (completedMatches * 100 / totalMatches) else 0
         
-        // Team Stats Helper
-        class TeamStats(val name: String) {
+        class TeamStats(val name: String, val id: String) {
             var wins = 0
             var draws = 0
             var losses = 0
@@ -111,18 +127,16 @@ class AnalyticsActivity : AppCompatActivity() {
             val gd get() = gf - ga
         }
 
-        val statsMap = teams.associate { it.teamId to TeamStats(it.name) }
+        val statsMap = teams.associate { it.teamId to TeamStats(it.name, it.teamId) }
 
         matches.filter { it.status == "COMPLETED" }.forEach { m ->
             val sA = statsMap[m.teamAId]
             val sB = statsMap[m.teamBId]
-            
             if (sA != null && sB != null) {
                 sA.gf += m.scoreA
                 sA.ga += m.scoreB
                 sB.gf += m.scoreB
                 sB.ga += m.scoreA
-                
                 when {
                     m.scoreA > m.scoreB -> { sA.wins++; sA.pts += 3; sB.losses++ }
                     m.scoreB > m.scoreA -> { sB.wins++; sB.pts += 3; sA.losses++ }
@@ -135,16 +149,18 @@ class AnalyticsActivity : AppCompatActivity() {
         val leader = sortedStats.firstOrNull()
         
         val bestOffense = statsMap.values.maxByOrNull { it.gf }
-        // Best defense: least conceded, but must have played at least 1 match to be relevant
-        val bestDefense = statsMap.values.filter { matches.any { m -> (m.teamAId == teams.find { t -> t.name == it.name }?.teamId || m.teamBId == teams.find { t -> t.name == it.name }?.teamId) && m.status == "COMPLETED" } }.minByOrNull { it.ga }
+        val bestDefense = statsMap.values
+            .filter { teamStat -> 
+                matches.any { m -> (m.teamAId == teamStat.id || m.teamBId == teamStat.id) && m.status == "COMPLETED" } 
+            }
+            .minByOrNull { it.ga }
         
         val mostWins = statsMap.values.maxByOrNull { it.wins }
         val mostDraws = statsMap.values.maxByOrNull { it.draws }
+        val mostLosses = statsMap.values.maxByOrNull { it.losses }
 
-        // Update UI
         runOnUiThread {
             progressBar.visibility = View.GONE
-            
             tvTotalTeams.text = totalTeams.toString()
             tvTotalMatches.text = totalMatches.toString()
             tvCompletedMatches.text = completedMatches.toString()
@@ -153,16 +169,21 @@ class AnalyticsActivity : AppCompatActivity() {
             progressTournament.progress = progress
             tvProgressPercent.text = "$progress%"
             
-            leader?.let {
-                tvLeaderTeam.text = it.name
-                tvLeaderStats.text = "${it.pts} Points | ${it.gd} GD"
+            if (t.format == "GROUP_KNOCKOUT") {
+                cardLeader.visibility = View.GONE
+            } else {
+                cardLeader.visibility = View.VISIBLE
+                leader?.let {
+                    tvLeaderTeam.text = it.name
+                    tvLeaderStats.text = "${it.pts} Points | ${it.gd} GD"
+                }
             }
             
             bestOffense?.let { tvBestOffense.text = "${it.name} (${it.gf})" }
             bestDefense?.let { tvBestDefense.text = "${it.name} (${it.ga})" }
-            
             mostWins?.let { tvMostWins.text = "${it.name} (${it.wins})" }
             mostDraws?.let { tvMostDraws.text = "${it.name} (${it.draws})" }
+            mostLosses?.let { tvMostLosses.text = "${it.name} (${it.losses})" }
         }
     }
 

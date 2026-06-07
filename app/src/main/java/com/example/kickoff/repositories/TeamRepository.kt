@@ -89,4 +89,23 @@ object TeamRepository {
             }
         }.addOnFailureListener { onResult(false, it.message) }
     }
+
+    fun getTeamsOnce(tournamentId: String, onResult: (List<Team>) -> Unit) {
+        database.orderByChild("tournamentId").equalTo(tournamentId).get()
+            .addOnSuccessListener { snapshot ->
+                val list = mutableListOf<Team>()
+                snapshot.children.forEach { 
+                    it.getValue(Team::class.java)?.let { team -> list.add(team) }
+                }
+                onResult(list)
+            }
+    }
+
+    fun updateTeamGroups(teams: List<Team>, onResult: (Boolean) -> Unit) {
+        val updates = mutableMapOf<String, Any?>()
+        teams.forEach { 
+            updates["${it.teamId}/groupName"] = it.groupName
+        }
+        database.updateChildren(updates).addOnCompleteListener { onResult(it.isSuccessful) }
+    }
 }

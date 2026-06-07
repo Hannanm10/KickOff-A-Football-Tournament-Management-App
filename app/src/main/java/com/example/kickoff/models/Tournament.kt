@@ -7,5 +7,7 @@ data class Tournament(
     var organizerName: String = "",
     var description: String = "",
     var status: String = "LIVE",
+    var format: String = "LEAGUE", // LEAGUE, GROUP_KNOCKOUT
+    var championTeamId: String = "",
     var createdAt: Long = System.currentTimeMillis()
 )

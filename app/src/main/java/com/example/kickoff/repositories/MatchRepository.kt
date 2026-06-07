@@ -84,21 +84,12 @@ object MatchRepository {
             }
     }
 
-    fun generateRoundRobinFixtures(tournamentId: String, teams: List<Team>, onResult: (Boolean, String?) -> Unit) {
-        if (teams.size < 2) {
-            onResult(false, "At least 2 teams are required")
-            return
-        }
-
-        val rootRef = FirebaseDatabase.getInstance().reference
+    fun generateLeagueFixtures(tournamentId: String, teams: List<Team>, onResult: (Boolean, String?) -> Unit) {
         val updates = mutableMapOf<String, Any?>()
-
-        // 1. Generate fixtures logic
         for (i in 0 until teams.size) {
             for (j in i + 1 until teams.size) {
                 val teamA = teams[i]
                 val teamB = teams[j]
-                
                 val matchId = database.push().key ?: continue
                 val match = Match(
                     matchId = matchId,
@@ -108,21 +99,48 @@ object MatchRepository {
                     teamAName = teamA.name,
                     teamBName = teamB.name,
                     status = "UPCOMING",
-                    scoreA = -1,
-                    scoreB = -1
+                    stage = "LEAGUE"
                 )
                 updates["matches/$matchId"] = match
             }
         }
+        FirebaseDatabase.getInstance().reference.updateChildren(updates).addOnCompleteListener { 
+            onResult(it.isSuccessful, it.exception?.message)
+        }
+    }
 
-        // 2. Clear existing matches first? No, we should ask user in UI.
-        // This function just performs the insertion.
-        rootRef.updateChildren(updates).addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                onResult(true, null)
-            } else {
-                onResult(false, task.exception?.message)
+    fun generateGroupStageFixtures(tournamentId: String, teams: List<Team>, onResult: (Boolean, String?) -> Unit) {
+        val updates = mutableMapOf<String, Any?>()
+        
+        val groupA = teams.filter { it.groupName == "A" }
+        val groupB = teams.filter { it.groupName == "B" }
+
+        fun generateForGroup(groupTeams: List<Team>) {
+            for (i in 0 until groupTeams.size) {
+                for (j in i + 1 until groupTeams.size) {
+                    val teamA = groupTeams[i]
+                    val teamB = groupTeams[j]
+                    val matchId = database.push().key ?: continue
+                    val match = Match(
+                        matchId = matchId,
+                        tournamentId = tournamentId,
+                        teamAId = teamA.teamId,
+                        teamBId = teamB.teamId,
+                        teamAName = teamA.name,
+                        teamBName = teamB.name,
+                        status = "UPCOMING",
+                        stage = "GROUP"
+                    )
+                    updates["matches/$matchId"] = match
+                }
             }
+        }
+
+        generateForGroup(groupA)
+        generateForGroup(groupB)
+
+        FirebaseDatabase.getInstance().reference.updateChildren(updates).addOnCompleteListener { 
+            onResult(it.isSuccessful, it.exception?.message)
         }
     }
 
@@ -137,5 +155,22 @@ object MatchRepository {
                 else onResult(false, task.exception?.message)
             }
         }.addOnFailureListener { onResult(false, it.message) }
+    }
+    
+    fun generateKnockoutMatch(tournamentId: String, teamA: Team, teamB: Team, stage: String, onResult: (Boolean, String?) -> Unit) {
+        val matchId = database.push().key ?: return onResult(false, "ID error")
+        val match = Match(
+            matchId = matchId,
+            tournamentId = tournamentId,
+            teamAId = teamA.teamId,
+            teamBId = teamB.teamId,
+            teamAName = teamA.name,
+            teamBName = teamB.name,
+            status = "UPCOMING",
+            stage = stage
+        )
+        database.child(matchId).setValue(match).addOnCompleteListener {
+            onResult(it.isSuccessful, it.exception?.message)
+        }
     }
 }

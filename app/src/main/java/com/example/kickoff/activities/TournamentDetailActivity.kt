@@ -2,11 +2,15 @@ package com.example.kickoff.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.kickoff.R
+import com.example.kickoff.models.Team
+import com.example.kickoff.models.Tournament
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.card.MaterialCardView
+import com.google.firebase.database.FirebaseDatabase
 
 class TournamentDetailActivity : AppCompatActivity() {
 
@@ -60,5 +64,40 @@ class TournamentDetailActivity : AppCompatActivity() {
             intent.putExtra("tournamentName", tournamentName)
             startActivity(intent)
         }
+
+        loadTournamentDetails()
+    }
+
+    private fun loadTournamentDetails() {
+        FirebaseDatabase.getInstance().getReference("tournaments").child(tournamentId)
+            .addValueEventListener(object : com.google.firebase.database.ValueEventListener {
+                override fun onDataChange(snapshot: com.google.firebase.database.DataSnapshot) {
+                    val tournament = snapshot.getValue(Tournament::class.java) ?: return
+                    
+                    findViewById<TextView>(R.id.tvFormat).text = "Format: ${if (tournament.format == "GROUP_KNOCKOUT") "Group + Knockout" else "League"}"
+                    findViewById<TextView>(R.id.tvOrganizer).text = "Organizer: ${tournament.organizerName}"
+                    
+                    if (tournament.championTeamId.isNotEmpty()) {
+                        fetchAndShowChampion(tournament.championTeamId)
+                    } else {
+                        findViewById<MaterialCardView>(R.id.cardChampion).visibility = View.GONE
+                    }
+                }
+
+                override fun onCancelled(error: com.google.firebase.database.DatabaseError) {}
+            })
+    }
+
+    private fun fetchAndShowChampion(teamId: String) {
+        FirebaseDatabase.getInstance().getReference("teams").child(teamId).get()
+            .addOnSuccessListener { snapshot ->
+                val team = snapshot.getValue(Team::class.java)
+                if (team != null) {
+                    val card = findViewById<MaterialCardView>(R.id.cardChampion)
+                    val tvChampion = findViewById<TextView>(R.id.tvChampionName)
+                    tvChampion.text = team.name
+                    card.visibility = View.VISIBLE
+                }
+            }
     }
 }

@@ -11,7 +11,7 @@ object TournamentRepository {
     private val database = FirebaseDatabase.getInstance().getReference("tournaments")
     private val auth = FirebaseAuth.getInstance()
 
-    fun createTournament(name: String, description: String, onResult: (Boolean, String?) -> Unit) {
+    fun createTournament(name: String, description: String, format: String, onResult: (Boolean, String?) -> Unit) {
         val currentUserId = auth.currentUser?.uid ?: return onResult(false, "Not logged in")
         
         // Get username from users node first
@@ -24,6 +24,7 @@ object TournamentRepository {
                     tournamentId = tournamentId,
                     name = name,
                     description = description,
+                    format = format,
                     organizerId = currentUserId,
                     organizerName = username
                 )
@@ -110,5 +111,10 @@ object TournamentRepository {
                     .addOnFailureListener { onResult(false, it.message) }
             }
             .addOnFailureListener { onResult(false, it.message) }
+    }
+
+    fun setChampion(tournamentId: String, teamId: String, onResult: (Boolean) -> Unit) {
+        database.child(tournamentId).child("championTeamId").setValue(teamId)
+            .addOnCompleteListener { onResult(it.isSuccessful) }
     }
 }
