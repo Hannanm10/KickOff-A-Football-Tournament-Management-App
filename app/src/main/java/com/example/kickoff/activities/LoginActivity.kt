@@ -31,7 +31,7 @@ class LoginActivity : AppCompatActivity() {
 
             UserRepository.login(email, password) { success, error ->
                 if (success) {
-                    startActivity(Intent(this, TournamentListActivity::class.java))
+                    startActivity(Intent(this, HomeActivity::class.java))
                     finish()
                 } else {
                     Toast.makeText(this, "Login failed: $error", Toast.LENGTH_LONG).show()

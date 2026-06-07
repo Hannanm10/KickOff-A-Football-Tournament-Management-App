@@ -43,7 +43,7 @@ class SignupActivity : AppCompatActivity() {
             UserRepository.signup(newUser, password) { success, error ->
                 if (success) {
                     Toast.makeText(this, "Account created successfully", Toast.LENGTH_SHORT).show()
-                    startActivity(Intent(this, LoginActivity::class.java))
+                    startActivity(Intent(this, HomeActivity::class.java))
                     finish()
                 } else {
                     Toast.makeText(this, "Signup failed: $error", Toast.LENGTH_LONG).show()

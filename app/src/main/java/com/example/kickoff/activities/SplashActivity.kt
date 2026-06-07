@@ -15,7 +15,7 @@ class SplashActivity : AppCompatActivity() {
 
         Handler(Looper.getMainLooper()).postDelayed({
             if (UserRepository.isUserLoggedIn()) {
-                startActivity(Intent(this, TournamentListActivity::class.java))
+                startActivity(Intent(this, HomeActivity::class.java))
             } else {
                 startActivity(Intent(this, LoginActivity::class.java))
             }
