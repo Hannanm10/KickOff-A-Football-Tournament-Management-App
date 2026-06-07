@@ -15,7 +15,6 @@ import com.example.kickoff.adapters.MatchAdapter
 import com.example.kickoff.models.Match
 import com.example.kickoff.models.Team
 import com.example.kickoff.repositories.MatchRepository
-import com.example.kickoff.repositories.TeamRepository
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -24,13 +23,22 @@ import com.google.firebase.database.FirebaseDatabase
 
 class MatchListActivity : AppCompatActivity() {
 
-    private var list = mutableListOf<Match>()
-    private lateinit var adapter: MatchAdapter
+    private var upcomingList = mutableListOf<Match>()
+    private var completedList = mutableListOf<Match>()
+    
+    private lateinit var upcomingAdapter: MatchAdapter
+    private lateinit var completedAdapter: MatchAdapter
+    
     private lateinit var tournamentId: String
     private lateinit var tournamentName: String
     private var teamFilterId: String? = null
+    
     private lateinit var progressBar: ProgressBar
-    private lateinit var tvEmpty: TextView
+    private lateinit var tvEmptyUpcoming: TextView
+    private lateinit var tvEmptyCompleted: TextView
+    private lateinit var tvUpcomingCount: TextView
+    private lateinit var tvCompletedCount: TextView
+    
     private var matchListener: com.google.firebase.database.ValueEventListener? = null
     
     private lateinit var btnAdd: FloatingActionButton
@@ -50,16 +58,8 @@ class MatchListActivity : AppCompatActivity() {
         toolbar.setNavigationOnClickListener { onBackPressed() }
         toolbar.title = if (teamFilterId != null) "Matches" else "Matches: $tournamentName"
 
-        val recycler = findViewById<RecyclerView>(R.id.recyclerMatches)
-        btnAdd = findViewById(R.id.btnAddMatch)
-        btnGenerate = findViewById(R.id.btnGenerateFixtures)
-        progressBar = findViewById(R.id.progressBar)
-        tvEmpty = findViewById(R.id.tvEmpty)
-
-        adapter = MatchAdapter(list, tournamentId)
-
-        recycler.layoutManager = LinearLayoutManager(this)
-        recycler.adapter = adapter
+        initUI()
+        setupRecyclers()
 
         btnAdd.setOnClickListener {
             val intent = Intent(this, AddMatchActivity::class.java)
@@ -73,6 +73,30 @@ class MatchListActivity : AppCompatActivity() {
 
         checkPermissions()
         loadMatches()
+    }
+
+    private fun initUI() {
+        btnAdd = findViewById(R.id.btnAddMatch)
+        btnGenerate = findViewById(R.id.btnGenerateFixtures)
+        progressBar = findViewById(R.id.progressBar)
+        tvEmptyUpcoming = findViewById(R.id.tvEmptyUpcoming)
+        tvEmptyCompleted = findViewById(R.id.tvEmptyCompleted)
+        tvUpcomingCount = findViewById(R.id.tvUpcomingCount)
+        tvCompletedCount = findViewById(R.id.tvCompletedCount)
+    }
+
+    private fun setupRecyclers() {
+        val recyclerUpcoming = findViewById<RecyclerView>(R.id.recyclerUpcoming)
+        val recyclerCompleted = findViewById<RecyclerView>(R.id.recyclerCompleted)
+
+        upcomingAdapter = MatchAdapter(upcomingList, tournamentId)
+        completedAdapter = MatchAdapter(completedList, tournamentId)
+
+        recyclerUpcoming.layoutManager = LinearLayoutManager(this)
+        recyclerUpcoming.adapter = upcomingAdapter
+
+        recyclerCompleted.layoutManager = LinearLayoutManager(this)
+        recyclerCompleted.adapter = completedAdapter
     }
 
     private fun checkPermissions() {
@@ -91,7 +115,8 @@ class MatchListActivity : AppCompatActivity() {
     }
 
     private fun checkAndGenerateFixtures() {
-        if (list.isNotEmpty()) {
+        val hasMatches = upcomingList.isNotEmpty() || completedList.isNotEmpty()
+        if (hasMatches) {
             AlertDialog.Builder(this)
                 .setTitle("Regenerate Fixtures?")
                 .setMessage("Existing matches found. Do you want to clear them and generate a fresh schedule, or just add new ones?")
@@ -110,7 +135,6 @@ class MatchListActivity : AppCompatActivity() {
 
     private fun fetchTeamsAndGenerate() {
         progressBar.visibility = View.VISIBLE
-        // We use a one-time fetch for teams here
         FirebaseDatabase.getInstance().getReference("teams")
             .orderByChild("tournamentId").equalTo(tournamentId).get()
             .addOnSuccessListener { snapshot ->
@@ -143,23 +167,36 @@ class MatchListActivity : AppCompatActivity() {
         progressBar.visibility = View.VISIBLE
         matchListener = MatchRepository.getMatchesByTournament(tournamentId) { allMatches ->
             progressBar.visibility = View.GONE
-            list.clear()
-            if (teamFilterId != null) {
-                list.addAll(allMatches.filter { it.teamAId == teamFilterId || it.teamBId == teamFilterId })
+            
+            val filteredMatches = if (teamFilterId != null) {
+                allMatches.filter { it.teamAId == teamFilterId || it.teamBId == teamFilterId }
             } else {
-                list.addAll(allMatches)
+                allMatches
             }
-            adapter.notifyDataSetChanged()
-            updateEmptyState()
+
+            upcomingList.clear()
+            upcomingList.addAll(filteredMatches.filter { it.status == "UPCOMING" }.sortedBy { it.matchDate })
+            
+            completedList.clear()
+            completedList.addAll(filteredMatches.filter { it.status == "COMPLETED" }.sortedByDescending { it.matchDate })
+
+            upcomingAdapter.notifyDataSetChanged()
+            completedAdapter.notifyDataSetChanged()
+            
+            updateUIStates()
         }
+    }
+
+    private fun updateUIStates() {
+        tvUpcomingCount.text = "(${upcomingList.size})"
+        tvCompletedCount.text = "(${completedList.size})"
+        
+        tvEmptyUpcoming.visibility = if (upcomingList.isEmpty()) View.VISIBLE else View.GONE
+        tvEmptyCompleted.visibility = if (completedList.isEmpty()) View.VISIBLE else View.GONE
     }
 
     override fun onDestroy() {
         super.onDestroy()
         matchListener?.let { MatchRepository.removeListener(it) }
-    }
-
-    private fun updateEmptyState() {
-        tvEmpty.visibility = if (list.isEmpty()) View.VISIBLE else View.GONE
     }
 }

@@ -99,8 +99,7 @@ class AddMatchActivity : AppCompatActivity() {
                 teamBName = teamB.name,
                 scoreA = valA,
                 scoreB = valB,
-                matchDate = etMatchDate.text.toString(),
-                status = "COMPLETED"
+                matchDate = etMatchDate.text.toString()
             )
 
             btnSave.isEnabled = false

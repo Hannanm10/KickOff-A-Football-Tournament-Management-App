@@ -14,6 +14,13 @@ object MatchRepository {
         val matchId = database.push().key ?: return onResult(false, "Could not generate ID")
         match.matchId = matchId
         
+        // Auto-status logic
+        if (match.scoreA >= 0 && match.scoreB >= 0) {
+            match.status = "COMPLETED"
+        } else {
+            match.status = "UPCOMING"
+        }
+        
         database.child(matchId).setValue(match)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
@@ -49,6 +56,13 @@ object MatchRepository {
     }
 
     fun updateMatch(match: Match, onResult: (Boolean, String?) -> Unit) {
+        // Auto-status logic
+        if (match.scoreA >= 0 && match.scoreB >= 0) {
+            match.status = "COMPLETED"
+        } else {
+            match.status = "UPCOMING"
+        }
+
         database.child(match.matchId).setValue(match)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {

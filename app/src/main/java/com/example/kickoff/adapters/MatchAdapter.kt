@@ -1,6 +1,7 @@
 package com.example.kickoff.adapters
 
 import android.app.AlertDialog
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,11 +15,15 @@ import com.example.kickoff.models.Match
 import com.example.kickoff.repositories.MatchRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import java.text.SimpleDateFormat
+import java.util.*
 
 class MatchAdapter(
     private val list: List<Match>,
     private val tournamentId: String
 ) : RecyclerView.Adapter<MatchAdapter.ViewHolder>() {
+
+    private val dateFormat = SimpleDateFormat("yyyy-M-d", Locale.getDefault())
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val teamA = view.findViewById<TextView>(R.id.tvTeamA)
@@ -43,17 +48,45 @@ class MatchAdapter(
 
         holder.teamA.text = match.teamAName
         holder.teamB.text = match.teamBName
-        holder.date.text = "Date: ${match.matchDate.ifEmpty { "N/A" }}"
+        
+        val dateStr = if (match.matchDate.isEmpty()) "N/A" else match.matchDate
+        holder.date.text = "Date: $dateStr"
         holder.statusBadge.text = match.status
 
         if (match.status == "UPCOMING") {
             holder.score.text = "VS"
-            holder.score.setBackgroundResource(R.drawable.bg_score_badge_upcoming) // New drawable needed or reuse
+            holder.score.setBackgroundResource(R.drawable.bg_score_badge_upcoming)
             holder.winner.visibility = View.GONE
+            
+            // Check for passed date
+            if (match.matchDate.isNotEmpty()) {
+                try {
+                    val matchDate = dateFormat.parse(match.matchDate)
+                    val today = Calendar.getInstance().apply {
+                        set(Calendar.HOUR_OF_DAY, 0)
+                        set(Calendar.MINUTE, 0)
+                        set(Calendar.SECOND, 0)
+                        set(Calendar.MILLISECOND, 0)
+                    }.time
+                    
+                    if (matchDate != null && matchDate.before(today)) {
+                        holder.date.text = "Scheduled date passed"
+                        holder.date.setTextColor(Color.RED)
+                    } else {
+                        holder.date.setTextColor(context.getColor(R.color.darkGrey))
+                    }
+                } catch (e: Exception) {
+                    holder.date.setTextColor(context.getColor(R.color.darkGrey))
+                }
+            } else {
+                holder.date.setTextColor(context.getColor(R.color.darkGrey))
+            }
+
         } else {
             holder.score.text = "${match.scoreA} - ${match.scoreB}"
             holder.score.setBackgroundResource(R.drawable.bg_score_badge)
             holder.winner.visibility = View.VISIBLE
+            holder.date.setTextColor(context.getColor(R.color.darkGrey))
             
             val result = when {
                 match.scoreA > match.scoreB -> "Winner: ${match.teamAName}"
@@ -119,7 +152,6 @@ class MatchAdapter(
                 
                 match.scoreA = sA
                 match.scoreB = sB
-                match.status = "COMPLETED"
                 
                 MatchRepository.updateMatch(match) { success, error ->
                     if (!success) {
