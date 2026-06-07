@@ -5,15 +5,15 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kickoff.R
 import com.example.kickoff.activities.TournamentDetailActivity
 import com.example.kickoff.models.Tournament
-import com.example.kickoff.utils.MatchStorage
-import com.example.kickoff.utils.SessionManager
-import com.example.kickoff.utils.TeamStorage
-import com.example.kickoff.utils.TournamentStorage
+import com.example.kickoff.repositories.TournamentRepository
+import com.google.firebase.auth.FirebaseAuth
 
 class TournamentAdapter(
     private val list: List<Tournament>,
@@ -38,69 +38,62 @@ class TournamentAdapter(
         val tournament = list[position]
 
         holder.name.text = tournament.name
-        holder.organizer.text = holder.itemView.context.getString(R.string.organizer_label, tournament.organizer)
+        holder.organizer.text = "Organizer: ${tournament.organizerName}"
 
         holder.itemView.setOnClickListener {
-            val context = holder.itemView.context
-
-            val intent = Intent(context, TournamentDetailActivity::class.java)
-            intent.putExtra("name", tournament.name)
-            intent.putExtra("organizer", tournament.organizer)
-
-            context.startActivity(intent)
+            onClick(tournament)
         }
 
         holder.itemView.setOnLongClickListener {
-
             val context = holder.itemView.context
+            val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
 
-            val currentUser = SessionManager.getUser(context)
-            val isOrganizer = currentUser == tournament.organizer
+            // Only organizer can edit/delete
+            if (currentUserId != tournament.organizerId) {
+                return@setOnLongClickListener true
+            }
 
-            if (!isOrganizer) return@setOnLongClickListener true
-
-            val options = arrayOf(context.getString(R.string.edit), context.getString(R.string.delete))
+            val options = arrayOf("Edit", "Delete")
             AlertDialog.Builder(context)
-                .setTitle(R.string.manage_tournament)
+                .setTitle("Manage Tournament")
                 .setItems(options) { _, which ->
                     when (which) {
                         0 -> { // Edit
-                            val editText = android.widget.EditText(context)
+                            val editText = EditText(context)
                             editText.setText(tournament.name)
                             AlertDialog.Builder(context)
-                                .setTitle(R.string.edit)
+                                .setTitle("Edit Name")
                                 .setView(editText)
-                                .setPositiveButton(android.R.string.ok) { _, _ ->
+                                .setPositiveButton("OK") { _, _ ->
                                     val newName = editText.text.toString().trim()
                                     if (newName.isNotEmpty()) {
-                                        TournamentStorage.updateTournament(context, tournament.name, newName)
-                                        
-                                        (list as MutableList)[position] = tournament.copy(name = newName)
-                                        notifyItemChanged(position)
-                                        onDataChanged()
+                                        TournamentRepository.updateTournament(tournament.tournamentId, newName) { success, error ->
+                                            if (!success) {
+                                                Toast.makeText(context, "Error: $error", Toast.LENGTH_SHORT).show()
+                                            }
+                                        }
                                     }
                                 }
-                                .setNegativeButton(android.R.string.cancel, null)
+                                .setNegativeButton("Cancel", null)
                                 .show()
                         }
                         1 -> { // Delete
                             AlertDialog.Builder(context)
-                                .setTitle(R.string.delete)
-                                .setMessage(R.string.confirm_delete)
-                                .setPositiveButton(R.string.yes) { _, _ ->
-                                    TournamentStorage.deleteTournament(context, tournament)
-
-                                    (list as MutableList).removeAt(position)
-                                    notifyItemRemoved(position)
-                                    onDataChanged()
+                                .setTitle("Delete")
+                                .setMessage("Are you sure?")
+                                .setPositiveButton("Yes") { _, _ ->
+                                    TournamentRepository.deleteTournament(tournament.tournamentId) { success, error ->
+                                        if (!success) {
+                                            Toast.makeText(context, "Error: $error", Toast.LENGTH_SHORT).show()
+                                        }
+                                    }
                                 }
-                                .setNegativeButton(R.string.no, null)
+                                .setNegativeButton("No", null)
                                 .show()
                         }
                     }
                 }
                 .show()
-
             true
         }
     }

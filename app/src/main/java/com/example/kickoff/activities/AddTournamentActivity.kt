@@ -1,13 +1,12 @@
 package com.example.kickoff.activities
 
 import android.os.Bundle
-import android.widget.*
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.kickoff.R
-import com.example.kickoff.models.Tournament
-import com.example.kickoff.utils.SessionManager
-import com.example.kickoff.utils.TournamentStorage
+import com.example.kickoff.repositories.TournamentRepository
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 
 class AddTournamentActivity : AppCompatActivity() {
@@ -22,31 +21,28 @@ class AddTournamentActivity : AppCompatActivity() {
         toolbar.setNavigationOnClickListener { onBackPressed() }
 
         val etName = findViewById<TextInputEditText>(R.id.etTournamentName)
-        val btnSave = findViewById<com.google.android.material.button.MaterialButton>(R.id.btnSaveTournament)
-
-        val currentUser = SessionManager.getUser(this) ?: ""
+        val etDescription = findViewById<TextInputEditText>(R.id.etTournamentDescription)
+        val btnSave = findViewById<MaterialButton>(R.id.btnSaveTournament)
 
         btnSave.setOnClickListener {
-
             val name = etName.text.toString().trim()
+            val description = etDescription.text.toString().trim()
 
             if (name.isEmpty()) {
-                etName.error = getString(R.string.error_empty_name)
+                Toast.makeText(this, "Enter tournament name", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            val existing = TournamentStorage.getTournaments(this)
-            if (existing.any { it.name.equals(name, ignoreCase = true) }) {
-                etName.error = getString(R.string.error_duplicate_tournament)
-                return@setOnClickListener
+            btnSave.isEnabled = false
+            TournamentRepository.createTournament(name, description) { success, error ->
+                btnSave.isEnabled = true
+                if (success) {
+                    Toast.makeText(this, "Tournament created", Toast.LENGTH_SHORT).show()
+                    finish()
+                } else {
+                    Toast.makeText(this, "Error: $error", Toast.LENGTH_SHORT).show()
+                }
             }
-
-            val tournament = Tournament(name, currentUser)
-            TournamentStorage.addTournament(this, tournament)
-
-            Toast.makeText(this, R.string.msg_tournament_created, Toast.LENGTH_SHORT).show()
-
-            finish()
         }
     }
 }

@@ -1,11 +1,11 @@
 package com.example.kickoff.activities
 
-import  android.content.Intent
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Button
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -14,23 +14,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.kickoff.R
 import com.example.kickoff.adapters.TournamentAdapter
 import com.example.kickoff.models.Tournament
-import com.example.kickoff.utils.SessionManager
-import com.example.kickoff.utils.TournamentStorage
+import com.example.kickoff.repositories.TournamentRepository
+import com.example.kickoff.repositories.UserRepository
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class TournamentListActivity : AppCompatActivity() {
     private lateinit var adapter: TournamentAdapter
-    private lateinit var tournamentList: MutableList<Tournament>
-
-    private fun updateEmptyState() {
-        val tvEmpty = findViewById<TextView>(R.id.tvEmpty)
-        if (tournamentList.isEmpty()) {
-            tvEmpty.visibility = View.VISIBLE
-        } else {
-            tvEmpty.visibility = View.GONE
-        }
-    }
+    private var tournamentList = mutableListOf<Tournament>()
+    private lateinit var progressBar: ProgressBar
+    private lateinit var tvEmpty: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,15 +32,17 @@ class TournamentListActivity : AppCompatActivity() {
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
         val btnAdd = findViewById<FloatingActionButton>(R.id.btnAddTournament)
         val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
+        progressBar = findViewById(R.id.progressBar)
+        tvEmpty = findViewById(R.id.tvEmpty)
+        
         setSupportActionBar(toolbar)
 
-        tournamentList = TournamentStorage.getTournaments(this)
-
-        adapter = TournamentAdapter(tournamentList, onDataChanged = { updateEmptyState() }) {
-            Toast.makeText(this, it.name, Toast.LENGTH_SHORT).show()
+        adapter = TournamentAdapter(tournamentList, onDataChanged = { updateEmptyState() }) { tournament ->
+            val intent = Intent(this, TournamentDetailActivity::class.java)
+            intent.putExtra("tournamentId", tournament.tournamentId)
+            intent.putExtra("tournamentName", tournament.name)
+            startActivity(intent)
         }
-
-        updateEmptyState()
 
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
@@ -55,6 +50,23 @@ class TournamentListActivity : AppCompatActivity() {
         btnAdd.setOnClickListener {
             startActivity(Intent(this, AddTournamentActivity::class.java))
         }
+
+        loadTournaments()
+    }
+
+    private fun loadTournaments() {
+        progressBar.visibility = View.VISIBLE
+        TournamentRepository.getAllTournaments { list ->
+            progressBar.visibility = View.GONE
+            tournamentList.clear()
+            tournamentList.addAll(list)
+            adapter.notifyDataSetChanged()
+            updateEmptyState()
+        }
+    }
+
+    private fun updateEmptyState() {
+        tvEmpty.visibility = if (tournamentList.isEmpty()) View.VISIBLE else View.GONE
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -65,7 +77,7 @@ class TournamentListActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_logout -> {
-                SessionManager.logout(this)
+                UserRepository.logout()
                 val intent = Intent(this, LoginActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
@@ -74,14 +86,5 @@ class TournamentListActivity : AppCompatActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        tournamentList.clear()
-        tournamentList.addAll(TournamentStorage.getTournaments(this))
-        updateEmptyState()
-        adapter.notifyDataSetChanged()
     }
 }

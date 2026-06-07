@@ -2,15 +2,16 @@ package com.example.kickoff.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.kickoff.R
-import com.example.kickoff.utils.SessionManager
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.card.MaterialCardView
 
 class TournamentDetailActivity : AppCompatActivity() {
+
+    private lateinit var tournamentId: String
+    private lateinit var tournamentName: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,39 +22,34 @@ class TournamentDetailActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         toolbar.setNavigationOnClickListener { onBackPressed() }
 
-        val name = intent.getStringExtra("name") ?: ""
-        val organizer = intent.getStringExtra("organizer") ?: ""
-        val currentUser = SessionManager.getUser(this) ?: ""
+        tournamentId = intent.getStringExtra("tournamentId") ?: ""
+        tournamentName = intent.getStringExtra("tournamentName") ?: ""
 
         val tvName = findViewById<TextView>(R.id.tvTournamentName)
-        val tvOrg = findViewById<TextView>(R.id.tvOrganizer)
+        tvName.text = tournamentName
 
-        val btnTeams = findViewById<com.google.android.material.card.MaterialCardView>(R.id.btnTeamsCard)
-        val btnMatches = findViewById<com.google.android.material.card.MaterialCardView>(R.id.btnMatchesCard)
-        val btnLeaderboard = findViewById<com.google.android.material.card.MaterialCardView>(R.id.btnLeaderboardCard)
-
-        tvName.text = name
-        tvOrg.text = "Organizer: $organizer"
-
-        val isOrganizer = currentUser == organizer
+        val btnTeams = findViewById<MaterialCardView>(R.id.btnTeamsCard)
+        val btnMatches = findViewById<MaterialCardView>(R.id.btnMatchesCard)
+        val btnLeaderboard = findViewById<MaterialCardView>(R.id.btnLeaderboardCard)
 
         btnTeams.setOnClickListener {
             val intent = Intent(this, TeamListActivity::class.java)
-            intent.putExtra("tournament", name)
-            intent.putExtra("organizer", organizer)
+            intent.putExtra("tournamentId", tournamentId)
+            intent.putExtra("tournamentName", tournamentName)
             startActivity(intent)
         }
 
         btnMatches.setOnClickListener {
             val intent = Intent(this, MatchListActivity::class.java)
-            intent.putExtra("tournament", name)
-            intent.putExtra("organizer", organizer)
+            intent.putExtra("tournamentId", tournamentId)
+            intent.putExtra("tournamentName", tournamentName)
             startActivity(intent)
         }
 
         btnLeaderboard.setOnClickListener {
             val intent = Intent(this, LeaderboardActivity::class.java)
-            intent.putExtra("tournament", name)
+            intent.putExtra("tournamentId", tournamentId)
+            intent.putExtra("tournamentName", tournamentName)
             startActivity(intent)
         }
     }
