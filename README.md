@@ -1,70 +1,42 @@
-# ⚽ KickOff – A Football Tournament Manager
+# ⚽ KickOff – Professional Football Tournament Manager
 
-KickOff is a Kotlin-based Android application designed to simplify football tournament management. It allows users to create tournaments, manage teams, record match results, and view real-time leaderboards — all in a clean, modern interface.
-
----
-
-## 📱 Features
-
-### 🏆 Tournament Management
-
-* Create, edit, and delete tournaments
-* Each tournament acts as a separate container
-
-### 👥 Team Management
-
-* Add teams to tournaments
-* Upload custom team logos from device gallery
-
-### ⚽ Match Management
-
-* Record match scores and dates
-* Prevents invalid matches (same team vs same team)
-* Dynamic team selection per tournament
-
-### 📊 Leaderboard System
-
-* Real-time standings calculation
-* Ranking logic:
-
-    * Points (Win = 3, Draw = 1, Loss = 0)
-    * Goal Difference
-    * Goals Scored
-
-### 🔐 Role-Based Access
-
-* **Organizer:** Full control (CRUD operations)
-* **Viewer:** Read-only access
-
-### 🔑 Authentication System
-
-* Login & Signup
-* Auto-login for returning users
-* Secure logout with session clearing
+KickOff is a modern, cloud-native Android application built with Kotlin and Firebase. It is designed to streamline the organization of football tournaments, providing real-time synchronization, automated scheduling, and advanced statistical insights.
 
 ---
 
-## 🧠 Key Highlights
+## 📱 Key Features
 
-* 🔄 **Dynamic Leaderboard** (no redundant storage)
-* 🔗 **Cascading Data Integrity**
+### 🏆 Multi-Format Tournament Engine
+*   **League Format:** Standard round-robin where the champion is determined by the final standings.
+*   **Group + Knockout:** Dynamic group splitting followed by automated Semi-Final and Final generation.
+*   **Automatic Fixture Generator:** Generates a complete round-robin schedule with a single click.
 
-    * Renaming teams updates matches automatically
-    * Deleting tournaments removes related data
-* 💾 **JSON-Based Storage**
+### 📊 Real-time Leaderboards & Analytics
+*   **Dynamic Standings:** Instantly calculated points, GD, and ranking based on completed matches.
+*   **Advanced Analytics:** Tracks winning streaks, unbeaten runs, best defense/offense, and match records.
+*   **Visual Charts:** Integrated **MPAndroidChart** for points distribution, goal analysis, and tournament progress.
 
-    * Simulates relational database using SharedPreferences
+### 🏠 Home Dashboard
+*   **Overview Cards:** Quick view of your tournaments, live events, total teams, and matches.
+*   **Recent Activity:** Fast access to the 5 most recently created tournaments.
+*   **Personalized Experience:** Greeting headers and role-based navigation.
 
+### 🔐 Security & Integrity
+*   **Firebase Authentication:** Secure email-based login and signup.
+*   **Role-Based Access:** Only tournament organizers can add teams, edit scores, or generate fixtures.
+*   **Cascading Deletes:** Atomic operations ensure that deleting a tournament removes all related teams and matches.
+*   **ID-Based Architecture:** Uses unique Firebase IDs instead of names to ensure absolute data integrity.
 
 ---
 
-## 🏗️ Tech Stack
+## 🛠️ Tech Stack
 
-* **Language:** Kotlin
-* **Platform:** Android SDK
-* **UI:** XML + Material Design Components
-* **Storage:** SharedPreferences + JSON
-* **Architecture:** Modular (Models, Utils, Activities, Adapters)
+*   **Language:** Kotlin
+*   **Backend:** Firebase Authentication & Realtime Database
+*   **Architecture:** Repository Pattern (Separation of Concerns)
+*   **UI:** Material Design 3 Components + ConstraintLayout
+*   **Visualization:** MPAndroidChart Library
+*   **Data Flow:** Asynchronous Real-time Listeners (No manual refresh needed)
 
 ---
 
@@ -73,59 +45,41 @@ KickOff is a Kotlin-based Android application designed to simplify football tour
 ```
 com.example.kickoff
 │
-├── models/        # Data classes (User, Team, Match, etc.)
-├── utils/         # Storage, JSON, session, image handling
-├── activities/    # All app screens
-├── adapters/      # RecyclerView adapters
-└── res/           # Layouts, colors, strings
+├── activities/     # Screen logic (Home, Dashboard, Analytics, Completion, etc.)
+├── repositories/   # Centralized Firebase data operations
+├── models/         # Data classes (User, Tournament, Team, Match, etc.)
+├── adapters/       # Real-time RecyclerView adapters
+└── utils/          # Logic helpers
 ```
 
 ---
 
-## 🚀 How to Run
+## 🚀 Getting Started
 
-1. Clone the repository:
-
-```
-git clone https://github.com/your-username/kickoff.git
-```
-
-2. Open in **Android Studio**
-
-3. Build & Run on:
-
-* Emulator OR
-* Physical Android device
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/your-username/kickoff.git
+    ```
+2.  **Firebase Setup:**
+    *   Add your `google-services.json` to the `app/` directory.
+    *   Enable **Email/Password** Auth in Firebase Console.
+    *   Enable **Realtime Database** and apply rules from `firebase-rules.json`.
+3.  **Run:** Build and deploy to an Android device (API 24+).
 
 ---
 
-## 📈 Future Improvements
-
-* Firebase / Cloud database integration
-* Real-time multi-user support
-* Push notifications
-* Advanced analytics and stats
-
----
-
-## 🎯 Learning Outcomes
-
-This project demonstrates:
-
-* Android UI development
-* Data persistence without database
-* Role-based access control
-* Dynamic data computation
-* Clean modular architecture
+## 🎯 Completion System
+Once all fixtures are completed, the app automatically:
+1.  Determines the Champion and Runner-up.
+2.  Locks the tournament data to prevent unauthorized changes.
+3.  Generates a **Tournament Summary** featuring award winners and statistical insights.
 
 ---
 
 ## 👤 Author
-
 **Hannan Mushtaq**
 
 ---
 
 ## 📜 License
-
 This project is for academic purposes.

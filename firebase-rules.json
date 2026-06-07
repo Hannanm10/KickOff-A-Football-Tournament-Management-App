@@ -1,0 +1,31 @@
+{
+  "rules": {
+    "users": {
+      "$uid": {
+        ".read": "auth != null",
+        ".write": "auth != null && auth.uid == $uid"
+      }
+    },
+    "tournaments": {
+      ".read": "auth != null",
+      "$tournamentId": {
+        ".write": "auth != null && (!data.exists() || data.child('organizerId').val() == auth.uid)",
+        ".validate": "newData.hasChildren(['name', 'organizerId'])"
+      }
+    },
+    "teams": {
+      ".read": "auth != null",
+      ".indexOn": ["tournamentId"],
+      "$teamId": {
+        ".write": "auth != null && ((!data.exists() && root.child('tournaments').child(newData.child('tournamentId').val()).child('organizerId').val() == auth.uid) || (data.exists() && root.child('tournaments').child(data.child('tournamentId').val()).child('organizerId').val() == auth.uid))"
+      }
+    },
+    "matches": {
+      ".read": "auth != null",
+      ".indexOn": ["tournamentId"],
+      "$matchId": {
+        ".write": "auth != null && ((!data.exists() && root.child('tournaments').child(newData.child('tournamentId').val()).child('organizerId').val() == auth.uid) || (data.exists() && root.child('tournaments').child(data.child('tournamentId').val()).child('organizerId').val() == auth.uid))"
+      }
+    }
+  }
+}
