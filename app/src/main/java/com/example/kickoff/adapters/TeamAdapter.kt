@@ -2,7 +2,6 @@ package com.example.kickoff.adapters
 
 import android.app.AlertDialog
 import android.content.Context
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +12,6 @@ import com.example.kickoff.R
 import com.example.kickoff.activities.MatchListActivity
 import com.example.kickoff.models.Team
 import com.example.kickoff.repositories.TeamRepository
-import com.example.kickoff.repositories.TournamentRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 
@@ -24,7 +22,6 @@ class TeamAdapter(
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val name = view.findViewById<TextView>(R.id.tvTeamName)
-        val logo = view.findViewById<ImageView>(R.id.ivTeamLogo)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -39,18 +36,6 @@ class TeamAdapter(
         val team = list[position]
         holder.name.text = team.name
         
-        if (team.logoUrl.isNotEmpty()) {
-            try {
-                holder.logo.setImageURI(Uri.parse(team.logoUrl))
-                holder.logo.setColorFilter(null)
-            } catch (e: Exception) {
-                holder.logo.setImageResource(android.R.drawable.ic_menu_myplaces)
-            }
-        } else {
-            holder.logo.setImageResource(android.R.drawable.ic_menu_myplaces)
-            holder.logo.setColorFilter(holder.itemView.context.getColor(R.color.primaryMaroon))
-        }
-
         holder.itemView.setOnClickListener {
             val context = holder.itemView.context
             val intent = Intent(context, MatchListActivity::class.java)
@@ -78,7 +63,7 @@ class TeamAdapter(
     }
 
     private fun showManageMenu(context: Context, team: Team) {
-        val options = arrayOf("Delete") // Edit can be added later
+        val options = arrayOf("Delete")
         AlertDialog.Builder(context)
             .setTitle("Manage Team")
             .setItems(options) { _, which ->

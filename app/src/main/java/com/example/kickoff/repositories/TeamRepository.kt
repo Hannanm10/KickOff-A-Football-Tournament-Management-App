@@ -9,13 +9,12 @@ import com.google.firebase.database.ValueEventListener
 object TeamRepository {
     private val database = FirebaseDatabase.getInstance().getReference("teams")
 
-    fun addTeam(tournamentId: String, name: String, logoUrl: String, onResult: (Boolean, String?) -> Unit) {
+    fun addTeam(tournamentId: String, name: String, onResult: (Boolean, String?) -> Unit) {
         val teamId = database.push().key ?: return onResult(false, "Could not generate ID")
         val team = Team(
             teamId = teamId,
             tournamentId = tournamentId,
-            name = name,
-            logoUrl = logoUrl
+            name = name
         )
 
         database.child(teamId).setValue(team)

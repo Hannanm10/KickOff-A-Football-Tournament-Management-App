@@ -2,7 +2,6 @@ package com.example.kickoff.models
 
 data class LeaderboardEntry(
     val teamName: String,
-    val logoUri: String? = null,
     var matchesPlayed: Int = 0,
     var wins: Int = 0,
     var draws: Int = 0,

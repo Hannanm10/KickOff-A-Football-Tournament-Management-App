@@ -3,11 +3,9 @@ package com.example.kickoff.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kickoff.R
-import com.example.kickoff.utils.ImageUtils
 import com.example.kickoff.models.LeaderboardEntry
 
 class LeaderboardAdapter(
@@ -18,7 +16,6 @@ class LeaderboardAdapter(
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tvPos: TextView = view.findViewById(R.id.tvPos)
-        val ivLogo: ImageView = view.findViewById(R.id.ivTeamLogo)
         val tvName: TextView = view.findViewById(R.id.tvTeamName)
         val tvPlayed: TextView = view.findViewById(R.id.tvPlayed)
         val tvWins: TextView = view.findViewById(R.id.tvWins)
@@ -42,20 +39,6 @@ class LeaderboardAdapter(
         val entry = list[position]
         holder.tvPos.text = (position + 1).toString()
         holder.tvName.text = entry.teamName
-
-        if (!entry.logoUri.isNullOrEmpty()) {
-            try {
-                val bitmap = ImageUtils.decodeSampledBitmapFromUri(holder.itemView.context, android.net.Uri.parse(entry.logoUri), 60, 60)
-                holder.ivLogo.setImageBitmap(bitmap)
-                holder.ivLogo.setColorFilter(null)
-            } catch (e: Exception) {
-                holder.ivLogo.setImageResource(android.R.drawable.ic_menu_myplaces)
-                holder.ivLogo.setColorFilter(holder.itemView.context.getColor(R.color.primaryMaroon))
-            }
-        } else {
-            holder.ivLogo.setImageResource(android.R.drawable.ic_menu_myplaces)
-            holder.ivLogo.setColorFilter(holder.itemView.context.getColor(R.color.primaryMaroon))
-        }
 
         holder.tvPlayed.text = entry.matchesPlayed.toString()
         holder.tvWins.text = entry.wins.toString()

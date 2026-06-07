@@ -25,16 +25,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/ivTeamLogo"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="16dp"
-            android:src="@android:drawable/ic_menu_myplaces"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/indicator"
-            app:layout_constraintTop_toTopOf="parent"/>
-
         <TextView
             android:id="@+id/tvTeamName"
             android:layout_width="0dp"
@@ -46,7 +36,7 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/ivArrow"
-            app:layout_constraintStart_toEndOf="@id/ivTeamLogo"
+            app:layout_constraintStart_toEndOf="@id/indicator"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView

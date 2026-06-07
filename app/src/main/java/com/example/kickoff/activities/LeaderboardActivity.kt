@@ -78,7 +78,7 @@ class LeaderboardActivity : AppCompatActivity() {
         progressBar.visibility = View.GONE
         
         val leaderboard = teams.map { team ->
-            val entry = LeaderboardEntry(team.name, team.logoUrl)
+            val entry = LeaderboardEntry(team.name)
             matches.forEach { match ->
                 if (match.status == "COMPLETED" && (match.teamAId == team.teamId || match.teamBId == team.teamId)) {
                     entry.matchesPlayed++
