@@ -24,9 +24,9 @@ object TeamStorage {
                 val obj = arr.getJSONObject(i)
 
                 val team = Team(
-                    obj.getString("name"),
-                    obj.getString("tournamentName"),
-                    if (obj.has("logoUri") && !obj.isNull("logoUri")) obj.getString("logoUri") else null
+                    name = obj.getString("name"),
+                    tournamentName = obj.getString("tournamentName"),
+                    logoUri = if (obj.has("logoUri") && !obj.isNull("logoUri")) obj.getString("logoUri") else ""
                 )
 
                 if (team.tournamentName == tournament) {
@@ -102,7 +102,7 @@ object TeamStorage {
         if (all.size != initialSize) saveTeams(context, all)
     }
 
-    fun updateTeamFull(context: Context, team: Team, newName: String, newLogoUri: String?) {
+    fun updateTeamFull(context: Context, team: Team, newName: String, newLogoUri: String) {
         val all = getAllTeams(context)
         val index = all.indexOfFirst { it.name == team.name && it.tournamentName == team.tournamentName }
         if (index != -1) {
@@ -147,9 +147,9 @@ object TeamStorage {
 
                 list.add(
                     Team(
-                        obj.getString("name"),
-                        obj.getString("tournamentName"),
-                        if (obj.has("logoUri") && !obj.isNull("logoUri")) obj.getString("logoUri") else null
+                        name = obj.getString("name"),
+                        tournamentName = obj.getString("tournamentName"),
+                        logoUri = if (obj.has("logoUri") && !obj.isNull("logoUri")) obj.getString("logoUri") else ""
                     )
                 )
             }

@@ -1,7 +1,15 @@
 package com.example.kickoff.models
 
 data class Team(
-    val name: String,
-    val tournamentName: String,
-    val logoUri: String? = null
-)
+    var teamId: String = "",
+    var tournamentId: String = "",
+    var name: String = "",
+    var logoUrl: String = "",
+    var createdAt: Long = System.currentTimeMillis(),
+    
+    // Compatibility fields
+    var logoUri: String = "", 
+    var tournamentName: String = ""
+) {
+    // Auxiliary constructor for old logic if needed, or handle defaults
+}
