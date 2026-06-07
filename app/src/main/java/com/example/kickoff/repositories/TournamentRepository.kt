@@ -117,4 +117,14 @@ object TournamentRepository {
         database.child(tournamentId).child("championTeamId").setValue(teamId)
             .addOnCompleteListener { onResult(it.isSuccessful) }
     }
+
+    fun completeTournament(tournamentId: String, championId: String, onResult: (Boolean) -> Unit) {
+        val updates = mapOf(
+            "status" to "COMPLETED",
+            "championTeamId" to championId,
+            "completionDate" to System.currentTimeMillis()
+        )
+        database.child(tournamentId).updateChildren(updates)
+            .addOnCompleteListener { onResult(it.isSuccessful) }
+    }
 }

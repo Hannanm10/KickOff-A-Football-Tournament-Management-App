@@ -331,13 +331,13 @@ class MatchListActivity : AppCompatActivity() {
 
             updateUIStates()
             updateGenerateButtonLabel()
-            checkAndSetChampion(filteredMatches)
+            checkAndSetChampion(allMatches)
         }
     }
 
     private fun checkAndSetChampion(matches: List<Match>) {
         val t = tournament ?: return
-        if (t.championTeamId.isNotEmpty()) return // Already set
+        if (t.status == "COMPLETED") return // Already completed
         if (matches.isEmpty()) return
         if (!matches.all { it.status == "COMPLETED" }) return
 
@@ -347,7 +347,7 @@ class MatchListActivity : AppCompatActivity() {
                 val leaderName = standings.firstOrNull()?.name
                 val leaderId = teams.find { it.name == leaderName }?.teamId
                 if (leaderId != null) {
-                    com.example.kickoff.repositories.TournamentRepository.setChampion(tournamentId, leaderId) { }
+                    TournamentRepository.completeTournament(tournamentId, leaderId) { }
                 }
             }
         } else {
@@ -355,7 +355,7 @@ class MatchListActivity : AppCompatActivity() {
             val finalMatch = matches.find { it.stage == "FINAL" }
             if (finalMatch != null && finalMatch.status == "COMPLETED") {
                 val winnerId = if (finalMatch.scoreA > finalMatch.scoreB) finalMatch.teamAId else finalMatch.teamBId
-                com.example.kickoff.repositories.TournamentRepository.setChampion(tournamentId, winnerId) { }
+                TournamentRepository.completeTournament(tournamentId, winnerId) { }
             }
         }
     }

@@ -90,12 +90,12 @@ class HomeActivity : AppCompatActivity() {
 
         tournamentListener = TournamentRepository.getAllTournaments { allTournaments ->
             val myTournaments = allTournaments.filter { it.organizerId == currentUserId }
-            val active = allTournaments.filter { it.championTeamId.isEmpty() }
-            val myChampionships = myTournaments.filter { it.championTeamId.isNotEmpty() }
+            val activeCount = allTournaments.count { it.status == "ONGOING" || it.status == "LIVE" }
+            val finalizedCount = myTournaments.count { it.status == "COMPLETED" }
 
             tvCountMyTournaments.text = myTournaments.size.toString()
-            tvCountActive.text = active.size.toString()
-            tvCountChampionships.text = myChampionships.size.toString()
+            tvCountActive.text = activeCount.toString()
+            tvCountChampionships.text = finalizedCount.toString()
 
             // Update Recent Activity (Latest 5)
             recentTournaments.clear()

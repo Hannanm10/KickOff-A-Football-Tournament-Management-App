@@ -73,6 +73,12 @@ class TournamentDetailActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        findViewById<MaterialCardView>(R.id.cardChampion).setOnClickListener {
+            val intent = Intent(this, TournamentCompletionActivity::class.java)
+            intent.putExtra("tournamentId", tournamentId)
+            startActivity(intent)
+        }
+
         loadTournamentDetails()
     }
 
