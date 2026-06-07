@@ -27,6 +27,7 @@ firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.r
 firebase-database = { group = "com.google.firebase", name = "firebase-database-ktx" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth-ktx" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
+mp-android-chart = { group = "com.github.PhilJay", name = "MPAndroidChart", version = "v3.1.0" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

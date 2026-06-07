@@ -59,6 +59,9 @@
             android:name=".activities.TeamDetailsActivity"
             android:exported="false" />
         <activity
+            android:name=".activities.VisualAnalyticsActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.HomeActivity"
             android:exported="false" />
     </application>

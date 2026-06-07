@@ -84,7 +84,6 @@
                 android:columnCount="2"
                 android:rowCount="2">
 
-                <!-- Total Teams -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -103,7 +102,6 @@
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Total Matches -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -122,7 +120,6 @@
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Completed/Upcoming -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -136,12 +133,11 @@
                         android:gravity="center"
                         android:orientation="vertical"
                         android:padding="16dp">
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Finished" android:textSize="12sp" android:textColor="@color/darkGrey"/>
-                        <TextView android:id="@+id/tvCompletedMatches" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textSize="20sp" android:textStyle="bold" android:textColor="@color/primaryMaroon"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Average Goals" android:textSize="12sp" android:textColor="@color/darkGrey"/>
+                        <TextView android:id="@+id/tvAvgGoals" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0" android:textSize="20sp" android:textStyle="bold" android:textColor="@color/primaryMaroon"/>
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Total Goals -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -155,7 +151,7 @@
                         android:gravity="center"
                         android:orientation="vertical"
                         android:padding="16dp">
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Goals" android:textSize="12sp" android:textColor="@color/darkGrey"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Total Goals" android:textSize="12sp" android:textColor="@color/darkGrey"/>
                         <TextView android:id="@+id/tvTotalGoals" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textSize="20sp" android:textStyle="bold" android:textColor="@color/primaryMaroon"/>
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
@@ -181,48 +177,20 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Best Offense -->
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
+            <!-- Match Records -->
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                app:cardCornerRadius="16dp">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/accentGold"
-                    android:orientation="horizontal"
-                    android:padding="16dp"
-                    android:gravity="center_vertical">
-                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="🔥 Best Offense" android:textColor="@color/primaryMaroon" android:textStyle="bold"/>
-                    <TextView android:id="@+id/tvBestOffense" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="N/A (0)" android:textColor="@color/primaryMaroon" android:textStyle="bold"/>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+                android:layout_marginTop="16dp"
+                android:text="Match Records"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
-            <!-- Best Defense -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                app:cardCornerRadius="16dp">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/accentGold"
-                    android:orientation="horizontal"
-                    android:padding="16dp"
-                    android:gravity="center_vertical">
-                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="🛡️ Best Defense" android:textColor="@color/primaryMaroon" android:textStyle="bold"/>
-                    <TextView android:id="@+id/tvBestDefense" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="N/A (0)" android:textColor="@color/primaryMaroon" android:textStyle="bold"/>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- Consistency -->
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="16dp"
                 app:cardCornerRadius="16dp">
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -230,21 +198,150 @@
                     android:background="@color/accentGold"
                     android:orientation="vertical"
                     android:padding="16dp">
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="✅ Records" android:textColor="@color/primaryMaroon" android:textStyle="bold"/>
-                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="8dp">
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Most Wins" android:textSize="12sp"/>
-                        <TextView android:id="@+id/tvMostWins" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="N/A" android:textStyle="bold" android:textColor="@color/primaryMaroon"/>
-                    </LinearLayout>
-                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="4dp">
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Most Draws" android:textSize="12sp"/>
-                        <TextView android:id="@+id/tvMostDraws" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="N/A" android:textStyle="bold" android:textColor="@color/primaryMaroon"/>
-                    </LinearLayout>
-                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="4dp">
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Most Losses" android:textSize="12sp"/>
-                        <TextView android:id="@+id/tvMostLosses" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="N/A" android:textStyle="bold" android:textColor="@color/primaryMaroon"/>
-                    </LinearLayout>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="⚽ Highest Scoring Match" android:textColor="@color/primaryMaroon" android:textStyle="bold"/>
+                    <TextView android:id="@+id/tvHighestScoringMatch" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="N/A" android:textColor="@color/primaryMaroon" android:layout_marginTop="4dp"/>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:cardCornerRadius="16dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/accentGold"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🥊 Biggest Victory" android:textColor="@color/primaryMaroon" android:textStyle="bold"/>
+                    <TextView android:id="@+id/tvBiggestVictory" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="N/A" android:textColor="@color/primaryMaroon" android:layout_marginTop="4dp"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Team Records -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Team Records"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:columnCount="2"
+                android:rowCount="3">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="4dp"
+                    app:cardCornerRadius="12dp">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/accentGold"
+                        android:orientation="vertical"
+                        android:padding="12dp">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="📈 Win Streak" android:textSize="10sp" android:textColor="@color/darkGrey" android:textStyle="bold"/>
+                        <TextView android:id="@+id/tvWinStreak" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="N/A" android:textSize="14sp" android:textStyle="bold" android:textColor="@color/primaryMaroon"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="4dp"
+                    app:cardCornerRadius="12dp">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/accentGold"
+                        android:orientation="vertical"
+                        android:padding="12dp">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🛡️ Unbeaten Run" android:textSize="10sp" android:textColor="@color/darkGrey" android:textStyle="bold"/>
+                        <TextView android:id="@+id/tvUnbeatenRun" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="N/A" android:textSize="14sp" android:textStyle="bold" android:textColor="@color/primaryMaroon"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="4dp"
+                    app:cardCornerRadius="12dp">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/accentGold"
+                        android:orientation="vertical"
+                        android:padding="12dp">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🧤 Clean Sheets" android:textSize="10sp" android:textColor="@color/darkGrey" android:textStyle="bold"/>
+                        <TextView android:id="@+id/tvCleanSheets" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="N/A" android:textSize="14sp" android:textStyle="bold" android:textColor="@color/primaryMaroon"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="4dp"
+                    app:cardCornerRadius="12dp">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/accentGold"
+                        android:orientation="vertical"
+                        android:padding="12dp">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🏃 Most Active" android:textSize="10sp" android:textColor="@color/darkGrey" android:textStyle="bold"/>
+                        <TextView android:id="@+id/tvMostActive" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="N/A" android:textSize="14sp" android:textStyle="bold" android:textColor="@color/primaryMaroon"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="4dp"
+                    app:cardCornerRadius="12dp">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/accentGold"
+                        android:orientation="vertical"
+                        android:padding="12dp">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🔥 Top Offense" android:textSize="10sp" android:textColor="@color/darkGrey" android:textStyle="bold"/>
+                        <TextView android:id="@+id/tvBestOffense" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="N/A" android:textSize="14sp" android:textStyle="bold" android:textColor="@color/primaryMaroon"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="4dp"
+                    app:cardCornerRadius="12dp">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/accentGold"
+                        android:orientation="vertical"
+                        android:padding="12dp">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🛡️ Best Defense" android:textSize="10sp" android:textColor="@color/darkGrey" android:textStyle="bold"/>
+                        <TextView android:id="@+id/tvBestDefense" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="N/A" android:textSize="14sp" android:textStyle="bold" android:textColor="@color/primaryMaroon"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+            </GridLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="32dp" />
 
         </LinearLayout>
     </ScrollView>
