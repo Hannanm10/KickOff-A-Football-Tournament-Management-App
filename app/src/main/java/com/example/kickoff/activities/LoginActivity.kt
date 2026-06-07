@@ -2,54 +2,49 @@ package com.example.kickoff.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.*
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.kickoff.R
-import com.example.kickoff.utils.SessionManager
-import com.example.kickoff.utils.UserStorage
+import com.example.kickoff.repositories.UserRepository
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 
 class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // Auto-login if already logged in
-        val currentUser = SessionManager.getUser(this)
-        if (currentUser != null) {
-            startActivity(Intent(this, TournamentListActivity::class.java))
-            finish()
-        }
-
         setContentView(R.layout.activity_login)
 
-        val etUsername = findViewById<TextInputEditText>(R.id.etUsername)
+        val etEmail = findViewById<TextInputEditText>(R.id.etEmail)
         val etPassword = findViewById<TextInputEditText>(R.id.etPassword)
-        val btnLogin = findViewById<com.google.android.material.button.MaterialButton>(R.id.btnLogin)
-        val btnSignup = findViewById<com.google.android.material.button.MaterialButton>(R.id.btnGoSignup)
+        val btnLogin = findViewById<MaterialButton>(R.id.btnLogin)
+        val btnGoSignup = findViewById<MaterialButton>(R.id.btnGoSignup)
 
         btnLogin.setOnClickListener {
+            val email = etEmail.text.toString().trim()
+            val password = etPassword.text.toString().trim()
 
-            val username = etUsername.text.toString()
-            val password = etPassword.text.toString()
-
-            val users = UserStorage.getUsers(this)
-
-            val user = users.find {
-                it.username == username && it.password == password
+            if (email.isEmpty() || password.isEmpty()) {
+                Toast.makeText(this, "Please enter email and password", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
             }
 
-            if (user != null) {
-                SessionManager.saveUser(this, username)
-
-                startActivity(Intent(this, TournamentListActivity::class.java))
-                finish()
-            } else {
-                Toast.makeText(this, "Invalid credentials", Toast.LENGTH_SHORT).show()
+            UserRepository.login(email, password) { success, error ->
+                if (success) {
+                    UserRepository.getCurrentUser { user ->
+                        if (user != null) {
+                            com.example.kickoff.utils.SessionManager.saveUser(this, user.username)
+                        }
+                        startActivity(Intent(this, TournamentListActivity::class.java))
+                        finish()
+                    }
+                } else {
+                    Toast.makeText(this, "Login failed: $error", Toast.LENGTH_LONG).show()
+                }
             }
         }
 
-        btnSignup.setOnClickListener {
+        btnGoSignup.setOnClickListener {
             startActivity(Intent(this, SignupActivity::class.java))
         }
     }

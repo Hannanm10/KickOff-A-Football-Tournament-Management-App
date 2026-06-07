@@ -5,17 +5,27 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
-import com.example.kickoff.R
+import com.example.kickoff.repositories.UserRepository
 
 class SplashActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_splash)
+        setContentView(com.example.kickoff.R.layout.activity_splash)
 
         Handler(Looper.getMainLooper()).postDelayed({
-            startActivity(Intent(this, LoginActivity::class.java))
-            finish()
-        }, 3000) // 3 seconds
+            if (UserRepository.isUserLoggedIn()) {
+                UserRepository.getCurrentUser { user ->
+                    if (user != null) {
+                        com.example.kickoff.utils.SessionManager.saveUser(this, user.username)
+                    }
+                    startActivity(Intent(this, TournamentListActivity::class.java))
+                    finish()
+                }
+            } else {
+                startActivity(Intent(this, LoginActivity::class.java))
+                finish()
+            }
+        }, 2000) // 2 seconds
     }
 }

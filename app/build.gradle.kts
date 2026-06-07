@@ -45,6 +45,7 @@ dependencies {
     implementation(libs.androidx.swiperefreshlayout)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.database)
+    implementation(libs.firebase.auth)
     implementation(libs.firebase.analytics)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

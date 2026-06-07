@@ -29,8 +29,8 @@ object UserStorage {
 
                 users.add(
                     User(
-                        obj.getString("username"),
-                        obj.getString("password")
+                        username = obj.getString("username"),
+                        password = obj.getString("password")
                     )
                 )
             }

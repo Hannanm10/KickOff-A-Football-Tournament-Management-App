@@ -2,11 +2,12 @@ package com.example.kickoff.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.*
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.kickoff.R
 import com.example.kickoff.models.User
-import com.example.kickoff.utils.UserStorage
+import com.example.kickoff.repositories.UserRepository
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 
 class SignupActivity : AppCompatActivity() {
@@ -16,17 +17,18 @@ class SignupActivity : AppCompatActivity() {
         setContentView(R.layout.activity_signup)
 
         val etUsername = findViewById<TextInputEditText>(R.id.etNewUsername)
+        val etEmail = findViewById<TextInputEditText>(R.id.etNewEmail)
         val etPassword = findViewById<TextInputEditText>(R.id.etNewPassword)
         val etConfirm = findViewById<TextInputEditText>(R.id.etConfirmPassword)
-        val btnSignup = findViewById<com.google.android.material.button.MaterialButton>(R.id.btnSignup)
+        val btnSignup = findViewById<MaterialButton>(R.id.btnSignup)
 
         btnSignup.setOnClickListener {
+            val username = etUsername.text.toString().trim()
+            val email = etEmail.text.toString().trim()
+            val password = etPassword.text.toString().trim()
+            val confirm = etConfirm.text.toString().trim()
 
-            val username = etUsername.text.toString()
-            val password = etPassword.text.toString()
-            val confirm = etConfirm.text.toString()
-
-            if (username.isEmpty() || password.isEmpty()) {
+            if (username.isEmpty() || email.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Fill all fields", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
@@ -36,12 +38,18 @@ class SignupActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            UserStorage.addUser(this, User(username, password))
-
-            Toast.makeText(this, "Account created", Toast.LENGTH_SHORT).show()
-
-            startActivity(Intent(this, LoginActivity::class.java))
-            finish()
+            val newUser = User(username = username, email = email)
+            
+            UserRepository.signup(newUser, password) { success, error ->
+                if (success) {
+                    com.example.kickoff.utils.SessionManager.saveUser(this, newUser.username)
+                    Toast.makeText(this, "Account created successfully", Toast.LENGTH_SHORT).show()
+                    startActivity(Intent(this, LoginActivity::class.java))
+                    finish()
+                } else {
+                    Toast.makeText(this, "Signup failed: $error", Toast.LENGTH_LONG).show()
+                }
+            }
         }
     }
 }
