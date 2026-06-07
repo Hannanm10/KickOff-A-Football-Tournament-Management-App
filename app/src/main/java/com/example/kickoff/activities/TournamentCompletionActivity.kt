@@ -88,7 +88,7 @@ class TournamentCompletionActivity : AppCompatActivity() {
         setStatRow(R.id.rowDate, "Completed On", dateStr)
 
         // Awards
-        val teamStats = teams.associate { it.teamId to TeamAwardStats(it.name) }
+        val teamStats = teams.associate { it.teamId to TeamAwardStats(it.name, it.teamId) }
         completed.forEach { m ->
             teamStats[m.teamAId]?.add(m.scoreA, m.scoreB)
             teamStats[m.teamBId]?.add(m.scoreB, m.scoreA)
@@ -97,7 +97,7 @@ class TournamentCompletionActivity : AppCompatActivity() {
         val bestAttack = teamStats.values.maxByOrNull { it.gf }
         // Best defense: least conceded, only for teams who played matches
         val bestDefense = teamStats.values.filter { stats -> 
-            completed.any { it.teamAId == teams.find { t -> t.name == stats.name }?.teamId || it.teamBId == teams.find { t -> t.name == stats.name }?.teamId }
+            completed.any { it.teamAId == stats.id || it.teamBId == stats.id }
         }.minByOrNull { it.ga }
         val highestScoring = completed.maxByOrNull { it.scoreA + it.scoreB }
 
@@ -140,7 +140,7 @@ class TournamentCompletionActivity : AppCompatActivity() {
         var ga = 0
     }
 
-    class TeamAwardStats(val name: String) {
+    class TeamAwardStats(val name: String, val id: String) {
         var gf = 0
         var ga = 0
         fun add(scored: Int, conceded: Int) {

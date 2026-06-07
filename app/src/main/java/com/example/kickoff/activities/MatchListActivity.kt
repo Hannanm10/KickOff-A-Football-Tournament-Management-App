@@ -109,9 +109,10 @@ class MatchListActivity : AppCompatActivity() {
             .addOnSuccessListener { snapshot ->
                 tournament = snapshot.getValue(Tournament::class.java)
                 val organizerId = tournament?.organizerId
+                val isCompleted = tournament?.status == "COMPLETED"
                 
                 if (currentUserId == organizerId && teamFilterId == null) {
-                    btnAdd.visibility = View.VISIBLE
+                    btnAdd.visibility = if (isCompleted) View.GONE else View.VISIBLE
                     btnGenerate.visibility = View.VISIBLE
                     updateGenerateButtonLabel()
                 } else {

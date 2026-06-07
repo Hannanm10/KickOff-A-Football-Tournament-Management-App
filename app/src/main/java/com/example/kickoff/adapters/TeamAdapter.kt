@@ -65,7 +65,8 @@ class TeamAdapter(
         FirebaseDatabase.getInstance().getReference("tournaments").child(tournamentId).get()
             .addOnSuccessListener { snapshot ->
                 val organizerId = snapshot.child("organizerId").getValue(String::class.java)
-                if (currentUserId == organizerId) {
+                val status = snapshot.child("status").getValue(String::class.java)
+                if (currentUserId == organizerId && status != "COMPLETED") {
                     showManageMenu(context, team)
                 }
             }

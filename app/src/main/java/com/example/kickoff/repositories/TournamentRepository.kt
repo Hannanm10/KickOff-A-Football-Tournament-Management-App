@@ -25,6 +25,7 @@ object TournamentRepository {
                     name = name,
                     description = description,
                     format = format,
+                    status = "ONGOING",
                     organizerId = currentUserId,
                     organizerName = username
                 )
