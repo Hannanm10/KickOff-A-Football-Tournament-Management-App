@@ -8,15 +8,18 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.kickoff.R
 import com.example.kickoff.models.Match
 import com.example.kickoff.models.Team
+import com.example.kickoff.models.Tournament
 import com.example.kickoff.repositories.MatchRepository
 import com.example.kickoff.repositories.TeamRepository
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.textfield.TextInputEditText
+import com.google.firebase.database.FirebaseDatabase
 import java.util.*
 
 class AddMatchActivity : AppCompatActivity() {
 
     private var teamList = mutableListOf<Team>()
+    private var tournament: Tournament? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +52,11 @@ class AddMatchActivity : AppCompatActivity() {
             }, year, month, day)
             dpd.show()
         }
+
+        FirebaseDatabase.getInstance().getReference("tournaments").child(tournamentId).get()
+            .addOnSuccessListener { snapshot ->
+                tournament = snapshot.getValue(Tournament::class.java)
+            }
 
         TeamRepository.getTeamsByTournament(tournamentId) { list ->
             teamList.clear()
@@ -90,6 +98,8 @@ class AddMatchActivity : AppCompatActivity() {
 
             val valA = sA.toIntOrNull() ?: 0
             val valB = sB.toIntOrNull() ?: 0
+            
+            val stage = if (tournament?.format == "LEAGUE") "LEAGUE" else "GROUP"
 
             val match = Match(
                 tournamentId = tournamentId,
@@ -99,7 +109,8 @@ class AddMatchActivity : AppCompatActivity() {
                 teamBName = teamB.name,
                 scoreA = valA,
                 scoreB = valB,
-                matchDate = etMatchDate.text.toString()
+                matchDate = etMatchDate.text.toString(),
+                stage = stage
             )
 
             btnSave.isEnabled = false

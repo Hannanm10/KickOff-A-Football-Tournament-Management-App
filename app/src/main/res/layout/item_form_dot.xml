@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tvFormChar"
+    android:layout_width="32dp"
+    android:layout_height="32dp"
+    android:layout_marginEnd="8dp"
+    android:background="@android:drawable/btn_default"
+    android:gravity="center"
+    android:text="W"
+    android:textColor="@color/white"
+    android:textSize="14sp"
+    android:textStyle="bold" />

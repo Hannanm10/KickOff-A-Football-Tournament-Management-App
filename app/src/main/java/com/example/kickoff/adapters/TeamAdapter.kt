@@ -38,9 +38,18 @@ class TeamAdapter(
         
         holder.itemView.setOnClickListener {
             val context = holder.itemView.context
-            val intent = Intent(context, MatchListActivity::class.java)
+            val intent = Intent(context, com.example.kickoff.activities.TeamDetailsActivity::class.java)
+            intent.putExtra("teamId", team.teamId)
+            intent.putExtra("teamName", team.name)
             intent.putExtra("tournamentId", team.tournamentId)
-            intent.putExtra("team_filter_id", team.teamId)
+            
+            // Try to get tournament name from Activity if available
+            val tName = if (context is com.example.kickoff.activities.TeamListActivity) {
+                // We'll need to make tournamentName accessible or pass it to adapter
+                "" 
+            } else ""
+            
+            intent.putExtra("tournamentName", tName)
             context.startActivity(intent)
         }
 

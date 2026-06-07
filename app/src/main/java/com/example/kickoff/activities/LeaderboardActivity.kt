@@ -190,10 +190,11 @@ class LeaderboardActivity : AppCompatActivity() {
 
     private fun openFilter(teamName: String) {
         val teamId = teams.find { it.name == teamName }?.teamId
-        val intent = android.content.Intent(this, MatchListActivity::class.java)
+        val intent = android.content.Intent(this, TeamDetailsActivity::class.java)
         intent.putExtra("tournamentId", tournamentId)
         intent.putExtra("tournamentName", tournamentName)
-        intent.putExtra("team_filter_id", teamId)
+        intent.putExtra("teamId", teamId)
+        intent.putExtra("teamName", teamName)
         startActivity(intent)
     }
 }

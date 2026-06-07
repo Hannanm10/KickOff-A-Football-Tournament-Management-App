@@ -17,6 +17,7 @@ import com.example.kickoff.models.Team
 import com.example.kickoff.models.Tournament
 import com.example.kickoff.repositories.MatchRepository
 import com.example.kickoff.repositories.TeamRepository
+import com.example.kickoff.repositories.TournamentRepository
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -174,7 +175,7 @@ class MatchListActivity : AppCompatActivity() {
                 .setPositiveButton("Clear & Generate") { _, _ -> 
                     MatchRepository.deleteAllMatchesInTournament(tournamentId) { success, _ ->
                         if (success) {
-                            com.example.kickoff.repositories.TournamentRepository.setChampion(tournamentId, "") { }
+                            TournamentRepository.setChampion(tournamentId, "") { }
                             fetchTeamsAndGenerate()
                         }
                     }
@@ -321,13 +322,13 @@ class MatchListActivity : AppCompatActivity() {
 
             upcomingList.clear()
             upcomingList.addAll(filteredMatches.filter { it.status == "UPCOMING" }.sortedBy { it.matchDate })
-            
+
             completedList.clear()
             completedList.addAll(filteredMatches.filter { it.status == "COMPLETED" }.sortedByDescending { it.matchDate })
 
             upcomingAdapter.notifyDataSetChanged()
             completedAdapter.notifyDataSetChanged()
-            
+
             updateUIStates()
             updateGenerateButtonLabel()
             checkAndSetChampion(filteredMatches)

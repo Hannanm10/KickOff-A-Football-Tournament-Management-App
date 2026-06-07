@@ -55,6 +55,7 @@ class TeamListActivity : AppCompatActivity() {
         btnAdd.setOnClickListener {
             val intent = Intent(this, AddTeamActivity::class.java)
             intent.putExtra("tournamentId", tournamentId)
+            intent.putExtra("tournamentName", tournamentName) // Added this
             startActivity(intent)
         }
 

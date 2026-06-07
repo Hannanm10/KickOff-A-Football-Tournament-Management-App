@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/primaryMaroon">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/darkMaroon"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
+        app:layout_constraintTop_toTopOf="parent"
+        app:title="Team Details"
+        app:titleTextColor="@color/white" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Team Identity -->
+            <TextView
+                android:id="@+id/tvTeamNameHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Team Name"
+                android:textColor="@color/accentGold"
+                android:textSize="28sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvTournamentNameHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:text="Tournament Name"
+                android:textColor="@color/white"
+                android:alpha="0.8" />
+
+            <!-- Quick Stats Grid - Fixed overlapping by using specific columnWidth and columnCount -->
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:columnCount="3"
+                android:rowCount="3"
+                android:useDefaultMargins="true"
+                android:alignmentMode="alignMargins"
+                android:layout_marginBottom="24dp">
+
+                <!-- Stats card template -->
+                <include layout="@layout/layout_stat_card" android:id="@+id/cardPlayed" />
+                <include layout="@layout/layout_stat_card" android:id="@+id/cardWins" />
+                <include layout="@layout/layout_stat_card" android:id="@+id/cardDraws" />
+                <include layout="@layout/layout_stat_card" android:id="@+id/cardLosses" />
+                <include layout="@layout/layout_stat_card" android:id="@+id/cardGF" />
+                <include layout="@layout/layout_stat_card" android:id="@+id/cardGA" />
+                <include layout="@layout/layout_stat_card" android:id="@+id/cardGD" />
+                <include layout="@layout/layout_stat_card" android:id="@+id/cardPoints" />
+                <include layout="@layout/layout_stat_card" android:id="@+id/cardWinRate" />
+            </GridLayout>
+
+            <!-- Form Section -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Recent Form"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"/>
+
+            <LinearLayout
+                android:id="@+id/layoutForm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="24dp" />
+
+            <!-- Match History Section -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Match History"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvMatchHistory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false" />
+
+            <TextView
+                android:id="@+id/tvEmptyHistory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="32dp"
+                android:text="No completed matches yet"
+                android:textColor="@color/lightGold"
+                android:visibility="gone" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
