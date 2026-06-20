@@ -58,7 +58,7 @@ com.example.kickoff
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/your-username/kickoff.git
+    git clone https://github.com/Hannanm10/kickoff.git
     ```
 2.  **Firebase Setup:**
     *   Add your `google-services.json` to the `app/` directory.
